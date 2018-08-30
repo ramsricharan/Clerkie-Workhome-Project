@@ -8,19 +8,17 @@
 
 /* Begin PBXBuildFile section */
 		35EFBD0B21388D6900A9620E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35EFBD0A21388D6900A9620E /* AppDelegate.swift */; };
-		35EFBD0D21388D6900A9620E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35EFBD0C21388D6900A9620E /* ViewController.swift */; };
+		35EFBD0D21388D6900A9620E /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35EFBD0C21388D6900A9620E /* LoginViewController.swift */; };
 		35EFBD1021388D6900A9620E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 35EFBD0E21388D6900A9620E /* Main.storyboard */; };
 		35EFBD1221388D6D00A9620E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 35EFBD1121388D6D00A9620E /* Assets.xcassets */; };
-		35EFBD1521388D6D00A9620E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 35EFBD1321388D6D00A9620E /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		35EFBD0721388D6900A9620E /* Clerkie App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Clerkie App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		35EFBD0A21388D6900A9620E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		35EFBD0C21388D6900A9620E /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		35EFBD0C21388D6900A9620E /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		35EFBD0F21388D6900A9620E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		35EFBD1121388D6D00A9620E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		35EFBD1421388D6D00A9620E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		35EFBD1621388D6D00A9620E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -55,10 +53,9 @@
 			isa = PBXGroup;
 			children = (
 				35EFBD0A21388D6900A9620E /* AppDelegate.swift */,
-				35EFBD0C21388D6900A9620E /* ViewController.swift */,
+				35EFBD0C21388D6900A9620E /* LoginViewController.swift */,
 				35EFBD0E21388D6900A9620E /* Main.storyboard */,
 				35EFBD1121388D6D00A9620E /* Assets.xcassets */,
-				35EFBD1321388D6D00A9620E /* LaunchScreen.storyboard */,
 				35EFBD1621388D6D00A9620E /* Info.plist */,
 			);
 			path = "Clerkie App";
@@ -122,7 +119,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				35EFBD1521388D6D00A9620E /* LaunchScreen.storyboard in Resources */,
 				35EFBD1221388D6D00A9620E /* Assets.xcassets in Resources */,
 				35EFBD1021388D6900A9620E /* Main.storyboard in Resources */,
 			);
@@ -135,7 +131,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				35EFBD0D21388D6900A9620E /* ViewController.swift in Sources */,
+				35EFBD0D21388D6900A9620E /* LoginViewController.swift in Sources */,
 				35EFBD0B21388D6900A9620E /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -149,14 +145,6 @@
 				35EFBD0F21388D6900A9620E /* Base */,
 			);
 			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-		35EFBD1321388D6D00A9620E /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				35EFBD1421388D6D00A9620E /* Base */,
-			);
-			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
