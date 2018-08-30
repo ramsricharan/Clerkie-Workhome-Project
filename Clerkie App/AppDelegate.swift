@@ -20,7 +20,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Launching Login View Controller manually
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.makeKeyAndVisible()
-
         window?.rootViewController = LoginViewController()
         
         
