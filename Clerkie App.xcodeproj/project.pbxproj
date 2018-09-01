@@ -7,31 +7,29 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		35E55184213A04EA00E22942 /* ChatRoomViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E55183213A04EA00E22942 /* ChatRoomViewController.swift */; };
 		35E5518A213A0E8C00E22942 /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E55189213A0E8C00E22942 /* SignUpViewController.swift */; };
 		35E5518C213A12CE00E22942 /* inputValidation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E5518B213A12CE00E22942 /* inputValidation.swift */; };
 		35E5518E213A16B800E22942 /* myExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E5518D213A16B800E22942 /* myExtensions.swift */; };
+		35E55191213A336100E22942 /* ChatRoomViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E55190213A336100E22942 /* ChatRoomViewController.swift */; };
 		35EFBD0B21388D6900A9620E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35EFBD0A21388D6900A9620E /* AppDelegate.swift */; };
 		35EFBD0D21388D6900A9620E /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35EFBD0C21388D6900A9620E /* LoginViewController.swift */; };
 		35EFBD1021388D6900A9620E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 35EFBD0E21388D6900A9620E /* Main.storyboard */; };
 		35EFBD1221388D6D00A9620E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 35EFBD1121388D6D00A9620E /* Assets.xcassets */; };
-		35EFBD1D2138A45B00A9620E /* credentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35EFBD1C2138A45B00A9620E /* credentials.swift */; };
 		35F64A1F2139D82E005619AB /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 35F64A1E2139D82E005619AB /* GoogleService-Info.plist */; };
 		C4D1C9A578A4B76FAB3E4EE6 /* Pods_Clerkie_App.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4005585B93EB7823970F7FE7 /* Pods_Clerkie_App.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		35E55183213A04EA00E22942 /* ChatRoomViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomViewController.swift; sourceTree = "<group>"; };
 		35E55189213A0E8C00E22942 /* SignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
 		35E5518B213A12CE00E22942 /* inputValidation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = inputValidation.swift; sourceTree = "<group>"; };
 		35E5518D213A16B800E22942 /* myExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = myExtensions.swift; sourceTree = "<group>"; };
+		35E55190213A336100E22942 /* ChatRoomViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomViewController.swift; sourceTree = "<group>"; };
 		35EFBD0721388D6900A9620E /* Clerkie App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Clerkie App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		35EFBD0A21388D6900A9620E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		35EFBD0C21388D6900A9620E /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		35EFBD0F21388D6900A9620E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		35EFBD1121388D6D00A9620E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		35EFBD1621388D6D00A9620E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		35EFBD1C2138A45B00A9620E /* credentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = credentials.swift; sourceTree = "<group>"; };
 		35F64A1E2139D82E005619AB /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		4005585B93EB7823970F7FE7 /* Pods_Clerkie_App.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Clerkie_App.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		447FEBAAC0D42A633C6F7B88 /* Pods-Clerkie App.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Clerkie App.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Clerkie App/Pods-Clerkie App.debug.xcconfig"; sourceTree = "<group>"; };
@@ -50,6 +48,24 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		35E5518F213A332900E22942 /* Chat Room  */ = {
+			isa = PBXGroup;
+			children = (
+				35E55190213A336100E22942 /* ChatRoomViewController.swift */,
+			);
+			path = "Chat Room ";
+			sourceTree = "<group>";
+		};
+		35E55192213A346A00E22942 /* Welcome Page */ = {
+			isa = PBXGroup;
+			children = (
+				35E55189213A0E8C00E22942 /* SignUpViewController.swift */,
+				35E5518B213A12CE00E22942 /* inputValidation.swift */,
+				35EFBD0C21388D6900A9620E /* LoginViewController.swift */,
+			);
+			path = "Welcome Page";
+			sourceTree = "<group>";
+		};
 		35EFBCFE21388D6800A9620E = {
 			isa = PBXGroup;
 			children = (
@@ -72,15 +88,12 @@
 			isa = PBXGroup;
 			children = (
 				35EFBD0A21388D6900A9620E /* AppDelegate.swift */,
-				35EFBD0C21388D6900A9620E /* LoginViewController.swift */,
-				35E55189213A0E8C00E22942 /* SignUpViewController.swift */,
-				35E5518B213A12CE00E22942 /* inputValidation.swift */,
+				35E55192213A346A00E22942 /* Welcome Page */,
+				35E5518F213A332900E22942 /* Chat Room  */,
 				35EFBD0E21388D6900A9620E /* Main.storyboard */,
 				35EFBD1121388D6D00A9620E /* Assets.xcassets */,
 				35EFBD1621388D6D00A9620E /* Info.plist */,
-				35EFBD1C2138A45B00A9620E /* credentials.swift */,
 				35F64A1E2139D82E005619AB /* GoogleService-Info.plist */,
-				35E55183213A04EA00E22942 /* ChatRoomViewController.swift */,
 				35E5518D213A16B800E22942 /* myExtensions.swift */,
 			);
 			path = "Clerkie App";
@@ -222,12 +235,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				35EFBD0D21388D6900A9620E /* LoginViewController.swift in Sources */,
-				35EFBD1D2138A45B00A9620E /* credentials.swift in Sources */,
 				35EFBD0B21388D6900A9620E /* AppDelegate.swift in Sources */,
 				35E5518C213A12CE00E22942 /* inputValidation.swift in Sources */,
 				35E5518E213A16B800E22942 /* myExtensions.swift in Sources */,
-				35E55184213A04EA00E22942 /* ChatRoomViewController.swift in Sources */,
 				35E5518A213A0E8C00E22942 /* SignUpViewController.swift in Sources */,
+				35E55191213A336100E22942 /* ChatRoomViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
