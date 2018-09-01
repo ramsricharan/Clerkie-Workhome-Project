@@ -1,93 +1,81 @@
 //
-//  ViewController.swift
+//  SignUpViewController.swift
 //  Clerkie App
 //
-//  Created by Ram Sri Charan on 8/30/18.
+//  Created by Ram Sri Charan on 8/31/18.
 //  Copyright © 2018 Ram Sri Charan. All rights reserved.
 //
 
 import UIKit
-import Firebase
 import FirebaseAuth
 
-
-class LoginViewController: UIViewController {
+class SignUpViewController: UIViewController {
 
     let checkInput = inputValidation()
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
-        view.backgroundColor = UIColor.red
-        
-        
-        setupView()
-        
+        view.backgroundColor = UIColor.cyan
+        setupViews()
     }
     
     ///////////////// Action Handlers ///////////////////
-    @objc func onLoginPressed()
-    {
+    @objc func onClosePressed() {
+        self.dismiss(animated: true, completion: nil)
+    }
+    
+    @objc func onRegisterPressed() {
         let username : String! = usernameTextField.text ?? ""
         let password : String!  = passwordTextField.text ?? ""
+        let repassword : String! = rePasswordTextField.text ?? ""
         
         if(checkInput.checkUserInput(username: username, password: password, viewController: self))
         {
-            Auth.auth().signIn(withEmail: username, password: password) {
-                (user, error) in
-                if(error == nil && user != nil)
-                {
-                    // Successful login
-                    print("login successful")
-                    self.present(ChatRoomViewController(), animated: true, completion: nil)
-                }
-                else
-                {
-                    let error = error! as NSError
-                    
-                    switch(error.code)
+            if(password != repassword)
+            {
+                self.showAlertWith(AlertTitle: "Password Mismatch", AlertMessage: "To confirm your password, please make sure you provided the same password twice.")
+            }
+            else
+            {
+                Auth.auth().createUser(withEmail: username, password: password) {
+                    (user, error) in
+                    if(error == nil && user != nil)
                     {
-                    case 17009:
-                        self.showAlertWith(AlertTitle: "Wrong Password", AlertMessage: error.localizedDescription)
-                        break
-                        
-                    case 17011:
-                        self.showAlertWith(AlertTitle: "Invalid Email ID", AlertMessage: error.localizedDescription)
-                        
-                    default:
-                        self.showAlertWith(AlertTitle: "Login Failed", AlertMessage: "Unable to Login to your account. Please try again later.")
+                        print("User created")
+                        self.present(ChatRoomViewController(), animated: true, completion: nil)
                     }
-                    
+                    else
+                    {
+                        let error = error! as NSError
+                        switch(error.code)
+                        {
+                        case 17007:
+                            self.showAlertWith(AlertTitle: "Registration Failed", AlertMessage: error.localizedDescription)
+                            break
+                            
+                        case 17026:
+                            self.showAlertWith(AlertTitle: "Registration Failed", AlertMessage: error.localizedDescription)
+                            
+                        default:
+                            self.showAlertWith(AlertTitle: "Registration Failed", AlertMessage: "Unable to register your account. Please try again later.")
+                        }
+                    }
                 }
             }
         }
     }
     
-    
-    // Sign Up Button Pressed
-    @objc func onSubmitPressed()
-    {
-        self.present(SignUpViewController(), animated: true, completion: nil)
-    }
-    
-    
-    
-    
-    
-    
-    ///////////////// Helper methods ///////////////////
-
+    ///////////////// Helper Methods ///////////////////
 
     
-    ///////////////// View components and Arrangement ///////////////////
-    
+    ///////////////// UI Components ///////////////////
     
     // App title view
     var appTitleLabel : UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Clerkie Project"
+        label.text = "Welcome User"
         label.adjustsFontSizeToFitWidth = true
         label.textAlignment = .center
         label.font = UIFont.boldSystemFont(ofSize: 40)
@@ -108,7 +96,7 @@ class LoginViewController: UIViewController {
     var usernameTextField : UITextField = {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.placeholder = "Username"
+        textField.placeholder = "Username (eg: user@clerkie.com)"
         textField.textAlignment = .center
         return textField
     }()
@@ -126,7 +114,25 @@ class LoginViewController: UIViewController {
     var passwordTextField : UITextField = {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.placeholder = "Password"
+        textField.placeholder = "Password (atleast 8 characters)"
+        textField.textAlignment = .center
+        textField.textContentType = UITextContentType.password
+        return textField
+    }()
+    
+    // Password re-enter textField container
+    var rePasswordContainer : UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .white
+        return view
+    }()
+    
+    // Text Field for Password re-enter
+    var rePasswordTextField : UITextField = {
+        let textField = UITextField()
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        textField.placeholder = "re-Password"
         textField.textAlignment = .center
         textField.textContentType = UITextContentType.password
         return textField
@@ -135,45 +141,43 @@ class LoginViewController: UIViewController {
     
     
     // Login button
-    var loginButton : UIButton = {
+    var registerButton : UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("Login", for: .normal)
+        button.setTitle("Register", for: .normal)
         
         button.layer.cornerRadius = 20
         button.layer.masksToBounds = true
         button.layer.borderWidth = 3
         button.layer.borderColor = UIColor.white.cgColor
         
-        button.addTarget(self, action: #selector(onLoginPressed), for: .touchUpInside)
+        button.addTarget(self, action: #selector(onRegisterPressed), for: .touchUpInside)
         return button
     }()
     
-    // Sign Up button
-    var signUpButton : UIButton = {
+    // Close button
+    var closeButton : UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle(" SignUp ", for: .normal)
+        button.setBackgroundImage(#imageLiteral(resourceName: "cross"), for: .normal)
         
+        button.addTarget(self, action: #selector(onClosePressed), for: .touchUpInside)
+
         
-        button.layer.cornerRadius = 35
-        button.layer.masksToBounds = true
-        button.layer.borderWidth = 3
-        button.layer.borderColor = UIColor.white.cgColor
-        
-        button.addTarget(self, action: #selector(onSubmitPressed), for: .touchUpInside)
         return button
     }()
     
-    
-    // This function is responsible for view component arrangement
-    func setupView()
+    // Arranges all UI components
+    func setupViews()
     {
         // Password Field
         setupPasswordTextField()
         
-        // Adding textFields
+        // Adding username textFields
         setupUsernameTextField()
+        
+        // Adding repassword TextField
+        setupRePasswordTextField()
         
         // Adding all other views to the base container
         view.addSubview(appTitleLabel)
@@ -182,22 +186,20 @@ class LoginViewController: UIViewController {
         appTitleLabel.bottomAnchor.constraint(equalTo: usernameContainer.topAnchor, constant: -24).isActive = true
         
         // Add login button
-        view.addSubview(loginButton)
-        loginButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        loginButton.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.7).isActive = true
-        loginButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
-        loginButton.topAnchor.constraint(equalTo: passwordContainer.bottomAnchor, constant: 24).isActive = true
+        view.addSubview(registerButton)
+        registerButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        registerButton.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.7).isActive = true
+        registerButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
+        registerButton.topAnchor.constraint(equalTo: rePasswordContainer.bottomAnchor, constant: 24).isActive = true
         
-        // Add Sign Up Button
-        view.addSubview(signUpButton)
-        signUpButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 20).isActive = true
-        signUpButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -16).isActive = true
-        signUpButton.widthAnchor.constraint(equalToConstant: 70).isActive = true
-        signUpButton.heightAnchor.constraint(equalToConstant: 70).isActive = true
-        
+        // Adding Close button
+        view.addSubview(closeButton)
+        closeButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 20).isActive = true
+        closeButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -16).isActive = true
+        closeButton.heightAnchor.constraint(equalToConstant: 70).isActive = true
+        closeButton.widthAnchor.constraint(equalToConstant: 70).isActive = true
     }
     
-
     func setupUsernameTextField()
     {
         // Adding container to the BaseView
@@ -206,7 +208,7 @@ class LoginViewController: UIViewController {
         usernameContainer.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
         usernameContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         usernameContainer.bottomAnchor.constraint(equalTo: passwordContainer.topAnchor, constant: -16).isActive = true
-
+        
         
         // Add textField to the container
         usernameContainer.addSubview(usernameTextField)
@@ -216,7 +218,7 @@ class LoginViewController: UIViewController {
         usernameTextField.centerYAnchor.constraint(equalTo: usernameContainer.centerYAnchor).isActive = true
         
     }
-   
+    
     func setupPasswordTextField()
     {
         // Adding container to the BaseView
@@ -225,7 +227,7 @@ class LoginViewController: UIViewController {
         passwordContainer.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
         passwordContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         passwordContainer.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
-
+        
         
         // Add textField to the container
         passwordContainer.addSubview(passwordTextField)
@@ -236,7 +238,23 @@ class LoginViewController: UIViewController {
         
     }
     
-    
+    func setupRePasswordTextField()
+    {
+        // Adding container to the BaseView
+        view.addSubview(rePasswordContainer)
+        rePasswordContainer.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.1).isActive = true
+        rePasswordContainer.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
+        rePasswordContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        rePasswordContainer.topAnchor.constraint(equalTo: passwordContainer.bottomAnchor, constant: 16).isActive = true
+        
+        // Add textField to the container
+        rePasswordContainer.addSubview(rePasswordTextField)
+        rePasswordTextField.heightAnchor.constraint(equalTo: rePasswordContainer.heightAnchor, multiplier: 0.9).isActive = true
+        rePasswordTextField.widthAnchor.constraint(equalTo: rePasswordContainer.widthAnchor, multiplier: 0.9).isActive = true
+        rePasswordTextField.centerXAnchor.constraint(equalTo: rePasswordContainer.centerXAnchor).isActive = true
+        rePasswordTextField.centerYAnchor.constraint(equalTo: rePasswordContainer.centerYAnchor).isActive = true
+        
+    }
+
 
 }
-

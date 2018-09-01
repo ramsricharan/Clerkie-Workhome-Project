@@ -7,14 +7,24 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		35E55184213A04EA00E22942 /* ChatRoomViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E55183213A04EA00E22942 /* ChatRoomViewController.swift */; };
+		35E5518A213A0E8C00E22942 /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E55189213A0E8C00E22942 /* SignUpViewController.swift */; };
+		35E5518C213A12CE00E22942 /* inputValidation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E5518B213A12CE00E22942 /* inputValidation.swift */; };
+		35E5518E213A16B800E22942 /* myExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E5518D213A16B800E22942 /* myExtensions.swift */; };
 		35EFBD0B21388D6900A9620E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35EFBD0A21388D6900A9620E /* AppDelegate.swift */; };
 		35EFBD0D21388D6900A9620E /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35EFBD0C21388D6900A9620E /* LoginViewController.swift */; };
 		35EFBD1021388D6900A9620E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 35EFBD0E21388D6900A9620E /* Main.storyboard */; };
 		35EFBD1221388D6D00A9620E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 35EFBD1121388D6D00A9620E /* Assets.xcassets */; };
 		35EFBD1D2138A45B00A9620E /* credentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35EFBD1C2138A45B00A9620E /* credentials.swift */; };
+		35F64A1F2139D82E005619AB /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 35F64A1E2139D82E005619AB /* GoogleService-Info.plist */; };
+		C4D1C9A578A4B76FAB3E4EE6 /* Pods_Clerkie_App.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4005585B93EB7823970F7FE7 /* Pods_Clerkie_App.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		35E55183213A04EA00E22942 /* ChatRoomViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomViewController.swift; sourceTree = "<group>"; };
+		35E55189213A0E8C00E22942 /* SignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
+		35E5518B213A12CE00E22942 /* inputValidation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = inputValidation.swift; sourceTree = "<group>"; };
+		35E5518D213A16B800E22942 /* myExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = myExtensions.swift; sourceTree = "<group>"; };
 		35EFBD0721388D6900A9620E /* Clerkie App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Clerkie App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		35EFBD0A21388D6900A9620E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		35EFBD0C21388D6900A9620E /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
@@ -22,6 +32,10 @@
 		35EFBD1121388D6D00A9620E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		35EFBD1621388D6D00A9620E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		35EFBD1C2138A45B00A9620E /* credentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = credentials.swift; sourceTree = "<group>"; };
+		35F64A1E2139D82E005619AB /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		4005585B93EB7823970F7FE7 /* Pods_Clerkie_App.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Clerkie_App.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		447FEBAAC0D42A633C6F7B88 /* Pods-Clerkie App.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Clerkie App.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Clerkie App/Pods-Clerkie App.debug.xcconfig"; sourceTree = "<group>"; };
+		B86446BCE67895D36E61AF4D /* Pods-Clerkie App.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Clerkie App.release.xcconfig"; path = "Pods/Target Support Files/Pods-Clerkie App/Pods-Clerkie App.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -29,6 +43,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C4D1C9A578A4B76FAB3E4EE6 /* Pods_Clerkie_App.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -40,6 +55,8 @@
 			children = (
 				35EFBD0921388D6900A9620E /* Clerkie App */,
 				35EFBD0821388D6900A9620E /* Products */,
+				3F367EE5EFE7738327D5E6F8 /* Pods */,
+				454CA141CA9BF2BCEF1C0B33 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -56,12 +73,34 @@
 			children = (
 				35EFBD0A21388D6900A9620E /* AppDelegate.swift */,
 				35EFBD0C21388D6900A9620E /* LoginViewController.swift */,
+				35E55189213A0E8C00E22942 /* SignUpViewController.swift */,
+				35E5518B213A12CE00E22942 /* inputValidation.swift */,
 				35EFBD0E21388D6900A9620E /* Main.storyboard */,
 				35EFBD1121388D6D00A9620E /* Assets.xcassets */,
 				35EFBD1621388D6D00A9620E /* Info.plist */,
 				35EFBD1C2138A45B00A9620E /* credentials.swift */,
+				35F64A1E2139D82E005619AB /* GoogleService-Info.plist */,
+				35E55183213A04EA00E22942 /* ChatRoomViewController.swift */,
+				35E5518D213A16B800E22942 /* myExtensions.swift */,
 			);
 			path = "Clerkie App";
+			sourceTree = "<group>";
+		};
+		3F367EE5EFE7738327D5E6F8 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				447FEBAAC0D42A633C6F7B88 /* Pods-Clerkie App.debug.xcconfig */,
+				B86446BCE67895D36E61AF4D /* Pods-Clerkie App.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		454CA141CA9BF2BCEF1C0B33 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				4005585B93EB7823970F7FE7 /* Pods_Clerkie_App.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -71,9 +110,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 35EFBD1921388D6D00A9620E /* Build configuration list for PBXNativeTarget "Clerkie App" */;
 			buildPhases = (
+				9C15BEC29977120552DB7333 /* [CP] Check Pods Manifest.lock */,
 				35EFBD0321388D6900A9620E /* Sources */,
 				35EFBD0421388D6900A9620E /* Frameworks */,
 				35EFBD0521388D6900A9620E /* Resources */,
+				65902B8B8227852739F5AA4A /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -124,10 +165,56 @@
 			files = (
 				35EFBD1221388D6D00A9620E /* Assets.xcassets in Resources */,
 				35EFBD1021388D6900A9620E /* Main.storyboard in Resources */,
+				35F64A1F2139D82E005619AB /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		65902B8B8227852739F5AA4A /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-Clerkie App/Pods-Clerkie App-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
+				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
+				"${BUILT_PRODUCTS_DIR}/leveldb-library/leveldb.framework",
+				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/leveldb.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Clerkie App/Pods-Clerkie App-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		9C15BEC29977120552DB7333 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Clerkie App-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		35EFBD0321388D6900A9620E /* Sources */ = {
@@ -137,6 +224,10 @@
 				35EFBD0D21388D6900A9620E /* LoginViewController.swift in Sources */,
 				35EFBD1D2138A45B00A9620E /* credentials.swift in Sources */,
 				35EFBD0B21388D6900A9620E /* AppDelegate.swift in Sources */,
+				35E5518C213A12CE00E22942 /* inputValidation.swift in Sources */,
+				35E5518E213A16B800E22942 /* myExtensions.swift in Sources */,
+				35E55184213A04EA00E22942 /* ChatRoomViewController.swift in Sources */,
+				35E5518A213A0E8C00E22942 /* SignUpViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -270,6 +361,7 @@
 		};
 		35EFBD1A21388D6D00A9620E /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 447FEBAAC0D42A633C6F7B88 /* Pods-Clerkie App.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -288,6 +380,7 @@
 		};
 		35EFBD1B21388D6D00A9620E /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = B86446BCE67895D36E61AF4D /* Pods-Clerkie App.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
