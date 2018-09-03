@@ -1,0 +1,6 @@
+framework module Pods_Clerkie_App {
+  umbrella header "Pods-Clerkie App-umbrella.h"
+
+  export *
+  module * { export * }
+}
