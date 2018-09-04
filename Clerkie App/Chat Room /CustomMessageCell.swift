@@ -32,6 +32,18 @@ class CustomMessageCell : UITableViewCell {
         return textView
     }()
     
+    let messageImageView : UIImageView = {
+        let imageView = UIImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.contentMode = .scaleAspectFill
+        
+        imageView.clipsToBounds = true
+        imageView.layer.cornerRadius = 10
+        imageView.layer.masksToBounds = true
+        
+        return imageView
+    }()
+    
     // Arrange view in the cell
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -41,6 +53,9 @@ class CustomMessageCell : UITableViewCell {
         
         // Add message TextField to the bubble view
         addSubview(messageTextView)
+        
+        // Add ImageView
+        addSubview(messageImageView)
     }
     
     required init?(coder aDecoder: NSCoder) {

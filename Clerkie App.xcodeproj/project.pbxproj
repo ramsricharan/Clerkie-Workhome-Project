@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		353C4962213CF65B002FA5D7 /* ChatBot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 353C4961213CF65B002FA5D7 /* ChatBot.swift */; };
+		358F6187213E49B9008824AF /* GalleryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358F6186213E49B9008824AF /* GalleryViewController.swift */; };
+		358F6189213E6899008824AF /* CustomImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358F6188213E6899008824AF /* CustomImageCell.swift */; };
 		35E5518A213A0E8C00E22942 /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E55189213A0E8C00E22942 /* SignUpViewController.swift */; };
 		35E5518C213A12CE00E22942 /* inputValidation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E5518B213A12CE00E22942 /* inputValidation.swift */; };
 		35E5518E213A16B800E22942 /* myExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E5518D213A16B800E22942 /* myExtensions.swift */; };
@@ -23,6 +25,8 @@
 
 /* Begin PBXFileReference section */
 		353C4961213CF65B002FA5D7 /* ChatBot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBot.swift; sourceTree = "<group>"; };
+		358F6186213E49B9008824AF /* GalleryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryViewController.swift; sourceTree = "<group>"; };
+		358F6188213E6899008824AF /* CustomImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomImageCell.swift; sourceTree = "<group>"; };
 		35E55189213A0E8C00E22942 /* SignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
 		35E5518B213A12CE00E22942 /* inputValidation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = inputValidation.swift; sourceTree = "<group>"; };
 		35E5518D213A16B800E22942 /* myExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = myExtensions.swift; sourceTree = "<group>"; };
@@ -56,8 +60,10 @@
 			isa = PBXGroup;
 			children = (
 				35E55190213A336100E22942 /* ChatRoomViewController.swift */,
-				35E99526213B673A00864BA0 /* CustomMessageCell.swift */,
+				358F6186213E49B9008824AF /* GalleryViewController.swift */,
 				353C4961213CF65B002FA5D7 /* ChatBot.swift */,
+				35E99526213B673A00864BA0 /* CustomMessageCell.swift */,
+				358F6188213E6899008824AF /* CustomImageCell.swift */,
 			);
 			path = "Chat Room ";
 			sourceTree = "<group>";
@@ -240,12 +246,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				358F6189213E6899008824AF /* CustomImageCell.swift in Sources */,
 				35E99527213B673A00864BA0 /* CustomMessageCell.swift in Sources */,
 				35EFBD0D21388D6900A9620E /* LoginViewController.swift in Sources */,
 				35EFBD0B21388D6900A9620E /* AppDelegate.swift in Sources */,
 				35E5518C213A12CE00E22942 /* inputValidation.swift in Sources */,
 				35E5518E213A16B800E22942 /* myExtensions.swift in Sources */,
 				353C4962213CF65B002FA5D7 /* ChatBot.swift in Sources */,
+				358F6187213E49B9008824AF /* GalleryViewController.swift in Sources */,
 				35E5518A213A0E8C00E22942 /* SignUpViewController.swift in Sources */,
 				35E55191213A336100E22942 /* ChatRoomViewController.swift in Sources */,
 			);
@@ -387,6 +395,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = RW6DCG4D4G;
 				INFOPLIST_FILE = "Clerkie App/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -406,6 +415,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = RW6DCG4D4G;
 				INFOPLIST_FILE = "Clerkie App/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

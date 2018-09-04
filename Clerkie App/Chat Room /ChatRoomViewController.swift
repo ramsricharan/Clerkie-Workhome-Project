@@ -8,15 +8,19 @@
 import UIKit
 import FirebaseAuth
 
-class ChatRoomViewController: UITableViewController, UITextViewDelegate {
+class ChatRoomViewController: UITableViewController, UITextViewDelegate, SelectedImageDelegate {
+
     
     fileprivate let cellIdentifier = "MessageCell"
+    fileprivate let userName = "John"
     
     ////////////////// My Variables //////////////////
     struct Message {
         var isIncoming : Bool?
         var sender : String?
         var content : String?
+        var type : String?
+        var image : UIImage?
     }
     
     var conversations = [Message]()
@@ -32,6 +36,7 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate {
         view.backgroundColor = UIColor.darkGray
         populateData()
         
+        
         // Setup View Components
         setupViews()
         
@@ -43,10 +48,17 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate {
 
         
         // Navigation Bar
+        self.navigationController?.navigationBar.barStyle = .blackOpaque
+
+        // Add Data Analytics Page button
+        let chartButton = UIBarButtonItem(image: #imageLiteral(resourceName: "chart-icon"), style: .plain, target: self, action: #selector(handleDataAnalyticsTapped))
+        self.navigationItem.leftBarButtonItem = chartButton
+        
+        // Add logout button
         let logoutButton = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(onLogoutPressed))
         logoutButton.tintColor = UIColor.red
         self.navigationItem.rightBarButtonItem  = logoutButton
-        self.navigationController?.navigationBar.barStyle = .blackOpaque
+        
         
         arrangeNavTitleViews()
 
@@ -56,12 +68,6 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotifications), name:NSNotification.Name.UIKeyboardWillHide, object: nil)
     }
     
-    
-    
-    @objc func test()
-    {
-        messageBoxTextView.endEditing(true)
-    }
     
     
     
@@ -181,9 +187,17 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate {
     
     
     
-    
-    
-    
+    ////////////////// Send Selected Image Delegate Method //////////////////
+
+    func imageSelected(selectedImage: UIImage) {
+        print("Got the selected Image")
+        print(selectedImage)
+        
+        let mediaMessage : Message = Message(isIncoming: false, sender: userName, content: "", type: "photo", image: selectedImage)
+        
+        addMessageToChat(newMessage: mediaMessage)
+        
+    }
     
     
     
@@ -213,41 +227,76 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate {
         cell.selectionStyle = .none
         cell.messageTextView.text = conversations[indexPath.row].content
         
-        if let messageText = conversations[indexPath.row].content {
-            let size = CGSize(width: 250.0, height: .infinity)
-            let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
-            let estimatedSize = NSString(string: messageText).boundingRect(with: size, options: options, attributes: [NSAttributedStringKey.font : UIFont.systemFont(ofSize: 14)], context: nil)
+        if(conversations[indexPath.row].type == "text")
+        {
+            if let messageText = conversations[indexPath.row].content {
+                let size = CGSize(width: 250.0, height: .infinity)
+                let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
+                let estimatedSize = NSString(string: messageText).boundingRect(with: size, options: options, attributes: [NSAttributedStringKey.font : UIFont.systemFont(ofSize: 14)], context: nil)
+                
+                if(conversations[indexPath.row].isIncoming)!
+                {
+                    // Incoming message
+                    cell.messageBubbleView.frame = CGRect(x: 8, y: 5, width: estimatedSize.width + 8 + 16, height: estimatedSize.height + 25)
+                    cell.messageBubbleView.backgroundColor = UIColor(white: 1, alpha: 0.9)
+                    cell.messageTextView.frame = CGRect(x: 16, y: 8, width: estimatedSize.width + 16 + 8 - 2, height: estimatedSize.height + 20)
+                    cell.messageTextView.textColor = UIColor.black
+                }
+                else
+                {
+                    // Outgoing message
+                    cell.messageBubbleView.frame = CGRect(x: view.frame.width - estimatedSize.width - 8 - 16 - 8, y: 5, width: estimatedSize.width + 8 + 16, height: estimatedSize.height + 25)
+                    cell.messageBubbleView.backgroundColor = myBlueColor
+                    cell.messageTextView.frame = CGRect(x: view.frame.width - estimatedSize.width - 16 - 8 - 2, y: 8, width: estimatedSize.width + 16 + 8, height: estimatedSize.height + 20)
+                    cell.messageTextView.textColor = UIColor.white
+                }
+            }
+        }
+        
+        
+        else
+        {
+            // Media Message
+            cell.messageTextView.isHidden = true
+            let myCellSize = 250.0
+            cell.messageImageView.image = self.conversations[indexPath.row].image
             
             if(conversations[indexPath.row].isIncoming)!
             {
                 // Incoming message
-                cell.messageBubbleView.frame = CGRect(x: 8, y: 5, width: estimatedSize.width + 8 + 16, height: estimatedSize.height + 25)
+                cell.messageBubbleView.frame = CGRect(x: 8, y: 5, width: myCellSize + 8, height: myCellSize + 25)
                 cell.messageBubbleView.backgroundColor = UIColor(white: 1, alpha: 0.9)
-                cell.messageTextView.frame = CGRect(x: 16, y: 8, width: estimatedSize.width + 16 + 8 - 2, height: estimatedSize.height + 20)
-                cell.messageTextView.textColor = UIColor.black
+                cell.messageImageView.frame = CGRect(x: 8, y: 5, width: myCellSize + 8, height: myCellSize + 25)
             }
+            
             else
             {
                 // Outgoing message
-                cell.messageBubbleView.frame = CGRect(x: view.frame.width - estimatedSize.width - 8 - 16 - 8, y: 5, width: estimatedSize.width + 8 + 16, height: estimatedSize.height + 25)
+                cell.messageBubbleView.frame = CGRect(x: view.frame.width - myCellSize - 8 - 16 - 8, y: 5, width: myCellSize + 8 + 16, height: myCellSize + 25)
                 cell.messageBubbleView.backgroundColor = myBlueColor
-                cell.messageTextView.frame = CGRect(x: view.frame.width - estimatedSize.width - 16 - 8 - 2, y: 8, width: estimatedSize.width + 16 + 8, height: estimatedSize.height + 20)
-                cell.messageTextView.textColor = UIColor.white
+                cell.messageTextView.frame = CGRect(x: view.frame.width - myCellSize - 16 - 8 - 2, y: 8, width: myCellSize + 16 + 8, height: myCellSize + 20)
             }
         }
+        
         return cell
     }
     
     
+    
+    
     // Setup Cell height based on the length of Message String
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if let messageText = conversations[indexPath.row].content {
-            let size = CGSize(width: 250.0, height: .infinity)
-            let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
-            let estimatedSize = NSString(string: messageText).boundingRect(with: size, options: options, attributes: [NSAttributedStringKey.font : UIFont.systemFont(ofSize: 14)], context: nil)
-            return (estimatedSize.height + 30)
+        
+        if conversations[indexPath.row].type == "text"
+        {
+            if let messageText = conversations[indexPath.row].content {
+                let size = CGSize(width: 250.0, height: .infinity)
+                let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
+                let estimatedSize = NSString(string: messageText).boundingRect(with: size, options: options, attributes: [NSAttributedStringKey.font : UIFont.systemFont(ofSize: 14)], context: nil)
+                return (estimatedSize.height + 30)
+            }
         }
-        return 300
+        return 275
     }
     
     
@@ -280,13 +329,20 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate {
         self.dismiss(animated: true, completion: nil)
     }
     
+    // Go to Data Analytics Page
+    @objc private func handleDataAnalyticsTapped()
+    {
+        print("Chart page opening")
+    }
+    
     // Send messages handler
     @objc private func onSendButtonPressed()
     {
         let message : String! = messageBoxTextView.text ?? ""
         if(!message.isEmpty)
         {
-            let newMessage : Message = Message.init(isIncoming: false, sender: "CurrentUser", content: message.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines))
+            let newMessage : Message = Message.init(isIncoming: false, sender: userName, content: message.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines), type: "text", image: nil)
+        
             addMessageToChat(newMessage: newMessage)
             
             resetMessageBox()
@@ -297,25 +353,68 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate {
     // Keyboard Will Show handler
     @objc private func handleKeyboardNotifications(notification: NSNotification)
     {
-        if let keyboardSize = notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? CGRect {
+        if let keyboardSize = notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? CGRect {
             
             let isKeyboardShowing = (notification.name == NSNotification.Name.UIKeyboardWillShow)
+            let duration = notification.userInfo?[UIKeyboardAnimationDurationUserInfoKey] as! Double
             self.messageContainerBottomConstraint?.constant = isKeyboardShowing ? -keyboardSize.height : 0
-            
-            UIView.animate(withDuration: 0, delay: 0, options: .curveEaseOut, animations: {
-                self.view.layoutIfNeeded()
-                }, completion: {(completed) in })
-            
+
+            UIView.animate(withDuration: duration, delay: 0, options: .curveEaseOut, animations: {
+                self.navigationController?.view.layoutIfNeeded()
+            }, completion: nil)
         }
     }
     
     
-    
-    
-    
-    
+    // Chat shortcut button pressed
+    @objc private func chatShortcutTapped()
+    {
+        if(chatShortcutsButton.transform == .identity)
+        {
+            // Chat Button Animation
+            UIView.animate(withDuration: 0.5) {
+                let degrees : CGFloat = 45 * (.pi / 180.0)
+                self.chatShortcutsButton.transform = CGAffineTransform(rotationAngle: degrees)
+                
+                self.shortcutContainerHeightConstraint?.constant = 150
+                
+                self.galleryButton.transform = CGAffineTransform(translationX: 0, y: -50)
+                self.galleryButton.alpha = 1
+                
+                self.sayHiButton.transform = CGAffineTransform(translationX: 0, y: -100)
+                self.sayHiButton.alpha = 1
+            }
+        }
+        
+        // Remove animation
+        else
+        {
+            startCollapseAnimations()
+        }
+    }
 
     
+
+    // Gallery Tapped
+    @objc private func onGalleryTapped()
+    {
+        startCollapseAnimations()
+        let galleryVC = GalleryViewController()
+        galleryVC.imageSelectedDelegate = self
+        galleryVC.view.backgroundColor = UIColor.clear
+        galleryVC.modalPresentationStyle = .overCurrentContext
+        self.present(galleryVC, animated: true, completion: nil)
+    }
+    
+    
+    // Say Hi tapped
+    @objc private func onSayHiTapped()
+    {
+        startCollapseAnimations()
+        let message : Message = Message.init(isIncoming: false, sender: userName, content: "Hey there! My name is \(userName).", type: "text", image: nil)
+        addMessageToChat(newMessage: message)
+        askChatBotToRespond(userMessage: "Hey..! Wassup..")
+    }
     
     
     
@@ -335,8 +434,9 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate {
     // Populate chat data
     private func populateData()
     {
-        let welcomeMessage_1 : Message = Message.init(isIncoming: true, sender: "Chat Bot", content: "Hello there")
-        let welcomeMessage_2 : Message = Message.init(isIncoming: true, sender: "Chat Bot", content: "Welcome to the Clerkie Chat bot.")
+        let welcomeMessage_1 : Message = Message.init(isIncoming: true, sender: "Chat Bot", content: "Hello there", type: "text", image: nil)
+
+        let welcomeMessage_2 : Message = Message.init(isIncoming: true, sender: "Chat Bot", content: "Welcome to the Clerkie Chat bot.", type: "text", image: nil)
 
         conversations.append(welcomeMessage_1)
         conversations.append(welcomeMessage_2)
@@ -404,13 +504,33 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate {
         
         let response = myChatBot.getResponse(message: userMessage)
         
-        let newMessage : Message = Message.init(isIncoming: true, sender: "Chat Bot", content: response.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines))
+        let newMessage : Message = Message.init(isIncoming: true, sender: "Chat Bot", content: response.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines), type: "text", image: nil)
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
             self.addMessageToChat(newMessage: newMessage)
         })
         
     }
+    
+    
+    // Handle Collapsing shortcut button animations
+    private func startCollapseAnimations()
+    {
+        UIView.animate(withDuration: 0.5) {
+            self.chatShortcutsButton.transform = .identity
+            
+            self.shortcutContainerHeightConstraint?.constant = 43
+
+            self.galleryButton.transform = .identity
+            self.galleryButton.alpha = 0
+            
+            self.sayHiButton.transform = .identity
+            self.sayHiButton.alpha = 0
+            
+        }
+    }
+
+    
     
     
     
@@ -426,16 +546,18 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate {
     ////////////////// View Components //////////////////
     
     // Container view
-    var containerView : UIView = {
+    var messageContainerView : UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = UIColor.white
         
         view.layer.cornerRadius = 3
         view.layer.masksToBounds = true
+        view.clipsToBounds = false
         
         return view
     }()
+    
     
     // MessageBox TextView
     var messageBoxTextView : UITextView = {
@@ -464,9 +586,63 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate {
         return button
     }()
     
+    
+    
+    
+    // Add Shortcut container
+    var shortcutContainer : UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = UIColor.clear
+        return view
+    }()
+    
+    // Add Chat Shortcut button
+    lazy var chatShortcutsButton : UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setImage(#imageLiteral(resourceName: "shortcut-icon"), for: .normal)
+        button.backgroundColor = UIColor(red: 209/255, green: 0/255, blue: 80/255, alpha: 1.0)
+        button.addTarget(self, action: #selector(chatShortcutTapped), for: .touchUpInside)
+        button.layer.masksToBounds = true
+        button.layer.cornerRadius = 16.5
+        return button
+    }()
+    
+    // Add Gallery button
+    lazy var galleryButton : UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setImage(#imageLiteral(resourceName: "gallery-icon"), for: .normal)
+        button.backgroundColor = UIColor(red: 209/255, green: 0/255, blue: 80/255, alpha: 1.0)
+        button.addTarget(self, action: #selector(onGalleryTapped), for: .touchUpInside)
+        button.layer.masksToBounds = true
+        
+        button.layer.cornerRadius = 16.5
+        return button
+    }()
+    
+    // Add Say Hi Button
+    lazy var sayHiButton : UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setImage(#imageLiteral(resourceName: "hello-icon"), for: .normal)
+        button.backgroundColor = UIColor(red: 209/255, green: 0/255, blue: 80/255, alpha: 1.0)
+        button.addTarget(self, action: #selector(onSayHiTapped), for: .touchUpInside)
+        button.layer.masksToBounds = true
+        button.layer.cornerRadius = 16.5
+        return button
+    }()
+    
+    
     // Constraints
     var messageContainerHeightConstraint : NSLayoutConstraint?
     var messageContainerBottomConstraint : NSLayoutConstraint?
+    var shortcutContainerHeightConstraint : NSLayoutConstraint?
+    
+    
+    
+    
     
     // Arrange all the view components
     private func setupViews()
@@ -474,35 +650,89 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate {
         // Getting View
         let myView = self.navigationController?.view
         
-        myView?.addSubview(containerView)
-        messageContainerHeightConstraint = containerView.heightAnchor.constraint(equalToConstant: 43)
+        // Add the base Container View
+        myView?.addSubview(messageContainerView)
+        messageContainerHeightConstraint = messageContainerView.heightAnchor.constraint(equalToConstant: 43)
         messageContainerHeightConstraint?.isActive = true
 
-        messageContainerBottomConstraint = containerView.bottomAnchor.constraint(equalTo: (myView?.bottomAnchor)!, constant: 0)
+        messageContainerBottomConstraint = messageContainerView.bottomAnchor.constraint(equalTo: (myView?.bottomAnchor)!, constant: 0)
         messageContainerBottomConstraint?.isActive = true
         
-        containerView.centerXAnchor.constraint(equalTo: (myView?.centerXAnchor)!).isActive = true
-        containerView.widthAnchor.constraint(equalTo: (myView?.widthAnchor)!, multiplier: 1).isActive = true
+        messageContainerView.centerXAnchor.constraint(equalTo: (myView?.centerXAnchor)!).isActive = true
+        messageContainerView.widthAnchor.constraint(equalTo: (myView?.widthAnchor)!, multiplier: 1).isActive = true
+        
+        // Add Chat Shortcuts button
+        setupShortcutButtons()
+
         
         // Add Message Box Text view to container
-        containerView.addSubview(messageBoxTextView)
+        messageContainerView.addSubview(messageBoxTextView)
         messageBoxTextView.heightAnchor.constraint(equalToConstant: 33).isActive = true
         
-        messageBoxTextView.widthAnchor.constraint(equalTo: containerView.widthAnchor, multiplier: 1, constant: -45).isActive = true
-        messageBoxTextView.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 4).isActive = true
-        messageBoxTextView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 5).isActive = true
-        messageBoxTextView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -5).isActive = true
+        messageBoxTextView.widthAnchor.constraint(equalTo: messageContainerView.widthAnchor, multiplier: 1, constant: -82).isActive = true
+        messageBoxTextView.leftAnchor.constraint(equalTo: chatShortcutsButton.rightAnchor, constant: 4).isActive = true
+        messageBoxTextView.topAnchor.constraint(equalTo: messageContainerView.topAnchor, constant: 5).isActive = true
+        messageBoxTextView.bottomAnchor.constraint(equalTo: messageContainerView.bottomAnchor, constant: -5).isActive = true
         messageBoxTextView.delegate = self
         
         
         //Add Send Button
-        containerView.addSubview(sendButton)
+        messageContainerView.addSubview(sendButton)
         sendButton.widthAnchor.constraint(equalToConstant: 33).isActive = true
         sendButton.heightAnchor.constraint(equalToConstant: 33).isActive = true
         sendButton.leftAnchor.constraint(equalTo: messageBoxTextView.rightAnchor, constant: 4).isActive = true
-        sendButton.rightAnchor.constraint(equalTo: containerView.rightAnchor, constant: -4).isActive = true
-        sendButton.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -4).isActive = true
+        sendButton.rightAnchor.constraint(equalTo: messageContainerView.rightAnchor, constant: -4).isActive = true
+        sendButton.bottomAnchor.constraint(equalTo: messageContainerView.bottomAnchor, constant: -4).isActive = true
+        
     }
+    
+    
+    // Setting up Shortcut button layout
+    private func setupShortcutButtons()
+    {
+        
+        let myView = self.navigationController?.view
+        
+        // Add Shortcut container
+        myView?.addSubview(shortcutContainer)
+        shortcutContainerHeightConstraint = shortcutContainer.heightAnchor.constraint(equalToConstant: 43)
+        shortcutContainerHeightConstraint?.isActive = true
+        
+        shortcutContainer.widthAnchor.constraint(equalToConstant: 33).isActive = true
+        shortcutContainer.bottomAnchor.constraint(equalTo: messageContainerView.bottomAnchor).isActive = true
+        shortcutContainer.leftAnchor.constraint(equalTo: messageContainerView.leftAnchor, constant: 4).isActive = true
+        
+        
+        // Add shortcut root button
+        shortcutContainer.addSubview(chatShortcutsButton)
+        chatShortcutsButton.widthAnchor.constraint(equalToConstant: 33).isActive = true
+        chatShortcutsButton.heightAnchor.constraint(equalToConstant: 33).isActive = true
+        chatShortcutsButton.centerXAnchor.constraint(equalTo: shortcutContainer.centerXAnchor).isActive = true
+        chatShortcutsButton.bottomAnchor.constraint(equalTo: shortcutContainer.bottomAnchor, constant: -4).isActive = true
+        
+        
+        // Add Gallery Button
+        shortcutContainer.addSubview(galleryButton)
+        galleryButton.widthAnchor.constraint(equalToConstant: 33).isActive = true
+        galleryButton.heightAnchor.constraint(equalToConstant: 33).isActive = true
+        galleryButton.centerXAnchor.constraint(equalTo: shortcutContainer.centerXAnchor).isActive = true
+        galleryButton.bottomAnchor.constraint(equalTo: chatShortcutsButton.bottomAnchor).isActive = true
+        
+        // Add Say Hi Button
+        shortcutContainer.addSubview(sayHiButton)
+        sayHiButton.widthAnchor.constraint(equalToConstant: 33).isActive = true
+        sayHiButton.heightAnchor.constraint(equalToConstant: 33).isActive = true
+        sayHiButton.centerXAnchor.constraint(equalTo: shortcutContainer.centerXAnchor).isActive = true
+        sayHiButton.bottomAnchor.constraint(equalTo: chatShortcutsButton.bottomAnchor).isActive = true
+        
+        // Make the root button top of stack
+        shortcutContainer.bringSubview(toFront: chatShortcutsButton)
+    }
+    
+    
+    
+    
+    
     
 }
 
