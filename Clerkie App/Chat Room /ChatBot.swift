@@ -11,6 +11,7 @@ import UIKit
 
 class ChatBot {
     
+    // Search Keywords
     fileprivate let GREETING_KEYWORDS = ["hello", "hi", "hey", "what's up?", "hello there", "wassup"]
     fileprivate let QUESTIONS_KEYWORDS = [ "what", "how", "when", "where"]
     fileprivate let FUN_KEYWORDS = [":)", ":d", "lol", "funny", "haha", "jk", "just kidding", "hehe" ]
@@ -18,10 +19,13 @@ class ChatBot {
     fileprivate let APOLOGIES_KEYWORD = ["sorry", "my bad"]
     
     
+    // Responses
     fileprivate let GREETING_RESPONSE = ["Hello! Hope you are doing great", "Hey, Wassup", "Hi!!!! Thanks for texting me"]
     fileprivate let APOLOGIES_RESPONSE = ["No Problem", "No worries", "Not at all an issue", "It's Alright"]
     fileprivate let DEFAULT_RESPONSE = ["Hmm...", "I don't know what to say", ":)"]
     fileprivate let FUN_RESPONSE = ["Haha!! That's funny", "HAHAHAHA..!", "OMG.. You are so funny!", "That's Hilarious!!"]
+    fileprivate let PHOTO_RESPONSE = ["That's a nice photo", "Wow..! Amazing pic", "Cool Picture!", "Nice Click", "Thanks for sharing such an awesome picture with me"]
+    fileprivate let VIDEO_RESPONSE = ["That's an interesting video", "Nice Video", "Wow.. That's a cool clip"]
     
     
     // Gives response to the users input
@@ -38,17 +42,18 @@ class ChatBot {
         
         if(isGreeting)
         {
-            response.append(GREETING_RESPONSE.randomElement() + ". ")
+            
+            response.append("\(GREETING_RESPONSE.randomElement()). ")
         }
         
         if(isApology)
         {
-            response.append(APOLOGIES_RESPONSE.randomElement() + ". ")
+            response.append("\(APOLOGIES_RESPONSE.randomElement()). ")
         }
         
         if(isFunny)
         {
-            response.append(FUN_RESPONSE.randomElement() + ". ")
+            response.append("\(FUN_RESPONSE.randomElement()). ")
         }
         
         if(isQuestion)
@@ -58,11 +63,28 @@ class ChatBot {
         
         if(response.isEmpty)
         {
-            response.append(DEFAULT_RESPONSE.randomElement() + ".")
+            response.append("\(DEFAULT_RESPONSE.randomElement()).")
         }
         
         return response
     }
+    
+    
+    
+    // Responding to Photo messages
+    func respondToPhoto() -> String
+    {
+        return PHOTO_RESPONSE.randomElement()
+    }
+    
+    // Responding to Video Messages
+    func respondToVideo() -> String
+    {
+        return VIDEO_RESPONSE.randomElement()
+    }
+    
+    
+    
     
 }
 

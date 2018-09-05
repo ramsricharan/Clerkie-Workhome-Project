@@ -9,7 +9,6 @@ import UIKit
 import FirebaseAuth
 
 class ChatRoomViewController: UITableViewController, UITextViewDelegate, SelectedImageDelegate {
-
     
     fileprivate let cellIdentifier = "MessageCell"
     fileprivate let userName = "John"
@@ -189,16 +188,19 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate, Selecte
     
     ////////////////// Send Selected Image Delegate Method //////////////////
 
-    func imageSelected(selectedImage: UIImage) {
-        print("Got the selected Image")
-        print(selectedImage)
-        
+    func imageUploaded(selectedImage: UIImage) {
         let mediaMessage : Message = Message(isIncoming: false, sender: userName, content: "", type: "photo", image: selectedImage)
         
         addMessageToChat(newMessage: mediaMessage)
-        
+        askChatBotToRespond(userMessage: mediaMessage)
     }
     
+    func videoUploaded(thumbnail: UIImage, duration: Float, localURL: URL) {
+        let mediaMessage : Message = Message(isIncoming: false, sender: userName, content: "", type: "video", image: thumbnail)
+        
+        addMessageToChat(newMessage: mediaMessage)
+        askChatBotToRespond(userMessage: mediaMessage)
+    }
     
     
     
@@ -213,6 +215,7 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate, Selecte
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return conversations.count
     }
+    
 
     // On TableView cell tapped
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -227,8 +230,15 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate, Selecte
         cell.selectionStyle = .none
         cell.messageTextView.text = conversations[indexPath.row].content
         
+        
+        let frameWidth = view.frame.width
+        
         if(conversations[indexPath.row].type == "text")
         {
+            cell.messageImageView.isHidden = true
+            cell.messageTextView.isHidden = false
+            cell.messageBubbleView.isHidden = false
+            
             if let messageText = conversations[indexPath.row].content {
                 let size = CGSize(width: 250.0, height: .infinity)
                 let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
@@ -245,9 +255,9 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate, Selecte
                 else
                 {
                     // Outgoing message
-                    cell.messageBubbleView.frame = CGRect(x: view.frame.width - estimatedSize.width - 8 - 16 - 8, y: 5, width: estimatedSize.width + 8 + 16, height: estimatedSize.height + 25)
+                    cell.messageBubbleView.frame = CGRect(x: frameWidth - estimatedSize.width - 8 - 16 - 8, y: 5, width: estimatedSize.width + 8 + 16, height: estimatedSize.height + 25)
                     cell.messageBubbleView.backgroundColor = myBlueColor
-                    cell.messageTextView.frame = CGRect(x: view.frame.width - estimatedSize.width - 16 - 8 - 2, y: 8, width: estimatedSize.width + 16 + 8, height: estimatedSize.height + 20)
+                    cell.messageTextView.frame = CGRect(x: frameWidth - estimatedSize.width - 16 - 8 - 2, y: 8, width: estimatedSize.width + 16 + 8, height: estimatedSize.height + 20)
                     cell.messageTextView.textColor = UIColor.white
                 }
             }
@@ -257,26 +267,32 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate, Selecte
         else
         {
             // Media Message
+            cell.messageImageView.isHidden = false
             cell.messageTextView.isHidden = true
-            let myCellSize = 250.0
+            cell.messageBubbleView.isHidden = true
+            
+            let myCellSize : CGFloat = (self.view.frame.height / 3)
             cell.messageImageView.image = self.conversations[indexPath.row].image
+
             
             if(conversations[indexPath.row].isIncoming)!
             {
                 // Incoming message
-                cell.messageBubbleView.frame = CGRect(x: 8, y: 5, width: myCellSize + 8, height: myCellSize + 25)
-                cell.messageBubbleView.backgroundColor = UIColor(white: 1, alpha: 0.9)
                 cell.messageImageView.frame = CGRect(x: 8, y: 5, width: myCellSize + 8, height: myCellSize + 25)
             }
-            
+
             else
             {
                 // Outgoing message
-                cell.messageBubbleView.frame = CGRect(x: view.frame.width - myCellSize - 8 - 16 - 8, y: 5, width: myCellSize + 8 + 16, height: myCellSize + 25)
-                cell.messageBubbleView.backgroundColor = myBlueColor
-                cell.messageTextView.frame = CGRect(x: view.frame.width - myCellSize - 16 - 8 - 2, y: 8, width: myCellSize + 16 + 8, height: myCellSize + 20)
+                let leftMargin = frameWidth - myCellSize - 32.0
+                let senderWidth = myCellSize + 24
+
+                cell.messageImageView.frame = CGRect(x: leftMargin, y: 8, width: senderWidth, height: myCellSize + 20)
             }
+            
         }
+        
+        cell.layoutIfNeeded()
         
         return cell
     }
@@ -296,7 +312,7 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate, Selecte
                 return (estimatedSize.height + 30)
             }
         }
-        return 275
+        return ((self.view.frame.height / 3) + 30.0)
     }
     
     
@@ -346,7 +362,7 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate, Selecte
             addMessageToChat(newMessage: newMessage)
             
             resetMessageBox()
-            askChatBotToRespond(userMessage: message)
+            askChatBotToRespond(userMessage: newMessage)
         }
     }
     
@@ -411,9 +427,10 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate, Selecte
     @objc private func onSayHiTapped()
     {
         startCollapseAnimations()
-        let message : Message = Message.init(isIncoming: false, sender: userName, content: "Hey there! My name is \(userName).", type: "text", image: nil)
+        let messageContent = "Hey there! My name is \(userName)."
+        let message : Message = Message.init(isIncoming: false, sender: userName, content: messageContent, type: "text", image: nil)
         addMessageToChat(newMessage: message)
-        askChatBotToRespond(userMessage: "Hey..! Wassup..")
+        askChatBotToRespond(userMessage: message)
     }
     
     
@@ -498,13 +515,23 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate, Selecte
     }
     
     // Create response for user input
-    private func askChatBotToRespond(userMessage : String)
+    private func askChatBotToRespond(userMessage : Message)
     {
         let myChatBot : ChatBot = ChatBot()
+        var response : String = ""
+        if(userMessage.type == "text")
+        {
+            response = myChatBot.getResponse(message: userMessage.content!)
+        }
+        else if (userMessage.type == "photo")
+        {
+            response = myChatBot.respondToPhoto()
+        }
+        else{
+            response = myChatBot.respondToVideo()
+        }
         
-        let response = myChatBot.getResponse(message: userMessage)
-        
-        let newMessage : Message = Message.init(isIncoming: true, sender: "Chat Bot", content: response.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines), type: "text", image: nil)
+        let newMessage : Message = Message.init(isIncoming: true, sender: "Chat Bot", content: response, type: "text", image: nil)
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
             self.addMessageToChat(newMessage: newMessage)

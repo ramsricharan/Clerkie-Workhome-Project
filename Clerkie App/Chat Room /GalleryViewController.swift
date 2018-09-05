@@ -8,12 +8,14 @@
 
 import UIKit
 import Photos
+import AVFoundation
 
 
 
 // Setup a Protocol
 protocol SelectedImageDelegate {
-    func imageSelected(selectedImage : UIImage)
+    func imageUploaded(selectedImage : UIImage)
+    func videoUploaded(thumbnail : UIImage, duration : Float, localURL : URL)
 }
 
 
@@ -22,11 +24,19 @@ class GalleryViewController: UIViewController, UICollectionViewDataSource, UICol
     
     
     ///////////////// My Variables /////////////////
+    struct videoObject {
+        var videoURL : URL?
+        var thumbnail : UIImage?
+        var duration : Float?
+    }
+    
     var PhotosArray = [UIImage]()
+    var VideosArray = [videoObject]()
+    
     let CELL_IDENTIFIER = "MyCollectionCell"
     var imageSelectedDelegate : SelectedImageDelegate!
     
-    
+    var isPhotosTab = true
     
     
     
@@ -41,6 +51,13 @@ class GalleryViewController: UIViewController, UICollectionViewDataSource, UICol
         // Add tap gesture to dismiss view
         let placeHolderTapped = UITapGestureRecognizer(target: self, action: #selector(dismissVC))
         placeHolderView.addGestureRecognizer(placeHolderTapped)
+        
+        // Add tap gesture for tab Views
+        let photoTabTapped = UITapGestureRecognizer(target: self, action: #selector(onPhotosTapped))
+        photoTabContainer.addGestureRecognizer(photoTabTapped)
+        
+        let videoTabTapped = UITapGestureRecognizer(target: self, action: #selector(onVideoTapped))
+        videoTabContainer.addGestureRecognizer(videoTabTapped)
     }
 
 
@@ -50,6 +67,18 @@ class GalleryViewController: UIViewController, UICollectionViewDataSource, UICol
     {
         placeHolderView.backgroundColor = UIColor.clear
         self.dismiss(animated: true, completion: nil)
+    }
+    
+    @objc private func onPhotosTapped()
+    {
+        isPhotosTab = true
+        toggleSelectionView()
+    }
+    
+    @objc private func onVideoTapped()
+    {
+        isPhotosTab = false
+        toggleSelectionView()
     }
     
     
@@ -92,15 +121,79 @@ class GalleryViewController: UIViewController, UICollectionViewDataSource, UICol
         }
         
         
+        // Deal with Videos
+        
+        let requestVideoOptions = PHVideoRequestOptions()
+        requestVideoOptions.deliveryMode = .automatic
+
+        let fetchVideosResults : PHFetchResult = PHAsset.fetchAssets(with: .video, options: fetchOptions)
+        if(fetchVideosResults.count > 0)
+        {
+            for i in 0..<fetchVideosResults.count
+            {
+                imageManager.requestAVAsset(forVideo: fetchVideosResults.object(at: i), options: requestVideoOptions) { (asset, audiomix, info) in
+                    if let urlAsset = asset as? AVURLAsset {
+                        let localVideoUrl: URL = urlAsset.url as URL
+                        let duration : Float = Float(urlAsset.duration.value)
+                        
+                        let videoObj = videoObject(videoURL: localVideoUrl, thumbnail: nil, duration: duration)
+                        self.VideosArray.append(videoObj)
+                    }
+                }
+            }
+        }
+        
         
     }
     
     
     
     
+    // Get Thumbnail from URL
+    private func thumbnailForVideoAtURL(url: URL) -> UIImage? {
+        
+        let asset = AVAsset(url: url)
+        let assetImageGenerator = AVAssetImageGenerator(asset: asset)
+        
+        var time = asset.duration
+        time.value = min(time.value, 2)
+        
+        do {
+            let imageRef = try assetImageGenerator.copyCGImage(at: time, actualTime: nil)
+            return UIImage(cgImage: imageRef)
+        } catch {
+            print("error")
+            return nil
+        }
+    }
     
     
-    
+    // Toggle the photos videos tab
+    private func toggleSelectionView()
+    {
+        var colorOne : UIColor?
+        var colorTwo : UIColor?
+        
+        if(isPhotosTab)
+        {
+            colorOne = UIColor.white
+            colorTwo = UIColor.blue
+        }
+            
+        else
+        {
+            colorOne = UIColor.blue
+            colorTwo = UIColor.white
+        }
+        
+        photoTabLabel.textColor = colorOne
+        photoTabContainer.backgroundColor = colorTwo
+        
+        videoTabLabel.textColor = colorTwo
+        videoTabContainer.backgroundColor = colorOne
+        
+        galleryCollectionView.reloadData()
+    }
     
     
     
@@ -110,14 +203,35 @@ class GalleryViewController: UIViewController, UICollectionViewDataSource, UICol
     /////////////// Collection View Methods  ///////////////
     // Number of rows
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return PhotosArray.count
+        return isPhotosTab ? PhotosArray.count : VideosArray.count
     }
     
     // Arrange Cell
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CELL_IDENTIFIER, for: indexPath) as! CustomImageCell
         
-        cell.photoImageView.image = PhotosArray[indexPath.row]
+        var poster : UIImage?
+        
+        if(isPhotosTab)
+        {
+            poster = PhotosArray[indexPath.row]
+        }
+            
+        else
+        {
+            if(VideosArray[indexPath.row].thumbnail == nil)
+            {
+                poster = thumbnailForVideoAtURL(url: VideosArray[indexPath.row].videoURL!)
+                VideosArray[indexPath.row].thumbnail = poster
+            }
+            else
+            {
+                poster = VideosArray[indexPath.row].thumbnail
+            }
+        }
+        
+        cell.photoImageView.image = poster
+        
         return cell
     }
     
@@ -139,7 +253,17 @@ class GalleryViewController: UIViewController, UICollectionViewDataSource, UICol
             self.view.layoutIfNeeded()
             currentCell.alpha = 0
         }, completion: { (true) in
-            self.imageSelectedDelegate.imageSelected(selectedImage: self.PhotosArray[indexPath.row])
+            
+            if(self.isPhotosTab)
+            {
+                self.imageSelectedDelegate.imageUploaded(selectedImage: self.PhotosArray[indexPath.row])
+            }
+            else
+            {
+                let myVideoObj : videoObject = self.VideosArray[indexPath.row]
+                self.imageSelectedDelegate.videoUploaded(thumbnail: myVideoObj.thumbnail!, duration: myVideoObj.duration!, localURL: myVideoObj.videoURL!)
+            }
+            
             self.dismissVC()
         })
         
@@ -167,15 +291,80 @@ class GalleryViewController: UIViewController, UICollectionViewDataSource, UICol
     /////////////// View Components ///////////////
     
     // Peek over view
-    let placeHolderView : UIView = {
+    var placeHolderView : UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = UIColor(white: 0, alpha: 0.4)
         return view
     }()
     
+    
+    
+    
+    
+    // Photo Video Toggle container
+    var photoVideoToggleContainer : UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = UIColor.red
+        
+        view.layer.cornerRadius = 10
+        view.layer.masksToBounds = true
+        view.layer.borderWidth = 1
+        view.layer.borderColor = UIColor.blue.cgColor
+        
+        return view
+    }()
+    
+    
+    
+    // PhotoTab Container
+    var photoTabContainer : UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = UIColor.blue
+        return view
+    }()
+    
+    // Photos tab label
+    var photoTabLabel : UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Photos"
+        label.textAlignment = .center
+        label.textColor = UIColor.white
+        return label
+    }()
+    
+    
+    // VideoTab Container
+    var videoTabContainer : UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = UIColor.white
+        return view
+    }()
+    
+    // Videos tab label
+    var videoTabLabel : UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Video"
+        label.textAlignment = .center
+        label.textColor = UIColor.blue
+        return label
+    }()
+    
+    
+    
+    
+    
+    
+    
+    
+    
     // ImagePicker Container
-    let pickerContainerView : UIView = {
+    var pickerContainerView : UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = UIColor.white
@@ -188,9 +377,8 @@ class GalleryViewController: UIViewController, UICollectionViewDataSource, UICol
     var closeButton : UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("X", for: .normal)
+        button.setTitle("Close", for: .normal)
         button.setTitleColor(UIColor.blue, for: .normal)
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 12)
         button.addTarget(self, action: #selector(dismissVC), for: .touchUpInside)
         return button
     }()
@@ -216,7 +404,7 @@ class GalleryViewController: UIViewController, UICollectionViewDataSource, UICol
     {
         // Add placeHolder View
         view.addSubview(placeHolderView)
-        placeHolderView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.6).isActive = true
+        placeHolderView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.5).isActive = true
         placeHolderView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
         placeHolderView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         placeHolderView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
@@ -225,25 +413,29 @@ class GalleryViewController: UIViewController, UICollectionViewDataSource, UICol
         view.addSubview(pickerContainerView)
         pickerContainerView.topAnchor.constraint(equalTo: placeHolderView.bottomAnchor).isActive = true
         pickerContainerView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
-        pickerContainerView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.4).isActive = true
+        pickerContainerView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.5).isActive = true
         pickerContainerView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        
+        // Make Photo Video Tab View
+        makePhotoVideoToggleView()
+        
         
         // Adding close button
         pickerContainerView.addSubview(closeButton)
-        closeButton.topAnchor.constraint(equalTo: pickerContainerView.topAnchor, constant: 3).isActive = true
+        closeButton.topAnchor.constraint(equalTo: pickerContainerView.topAnchor, constant: 5).isActive = true
         closeButton.rightAnchor.constraint(equalTo: pickerContainerView.rightAnchor, constant: -8).isActive = true
-        closeButton.heightAnchor.constraint(equalToConstant: 30).isActive = true
         closeButton.widthAnchor.constraint(equalToConstant: 30).isActive = true
+        closeButton.heightAnchor.constraint(lessThanOrEqualTo: pickerContainerView.heightAnchor, multiplier: 0.15).isActive = true
         
         // Adding collectionView
         
         pickerContainerView.addSubview(galleryCollectionView)
-        galleryCollectionView.topAnchor.constraint(equalTo: closeButton.bottomAnchor, constant: 2).isActive = true
+        galleryCollectionView.topAnchor.constraint(equalTo: photoVideoToggleContainer.bottomAnchor, constant: 5).isActive = true
         galleryCollectionView.leftAnchor.constraint(equalTo: pickerContainerView.leftAnchor, constant: 8).isActive = true
         galleryCollectionView.rightAnchor.constraint(equalTo: pickerContainerView.rightAnchor, constant: -8).isActive = true
         galleryCollectionView.bottomAnchor.constraint(equalTo: pickerContainerView.bottomAnchor, constant: -8).isActive = true
         galleryCollectionView.widthAnchor.constraint(equalTo: pickerContainerView.widthAnchor, constant: -16).isActive = true
-        galleryCollectionView.heightAnchor.constraint(equalTo: pickerContainerView.heightAnchor, constant: -43).isActive = true
+        galleryCollectionView.heightAnchor.constraint(equalTo: pickerContainerView.heightAnchor, multiplier: 0.85, constant: -18).isActive = true
         
         
         galleryCollectionView.dataSource = self
@@ -251,6 +443,51 @@ class GalleryViewController: UIViewController, UICollectionViewDataSource, UICol
         
     }
 
+    
+    
+    
+    private func makePhotoVideoToggleView()
+    {
+        pickerContainerView.addSubview(photoVideoToggleContainer)
+        photoVideoToggleContainer.topAnchor.constraint(equalTo: pickerContainerView.topAnchor, constant: 5).isActive = true
+        photoVideoToggleContainer.widthAnchor.constraint(equalTo: pickerContainerView.widthAnchor, multiplier: 0.6).isActive = true
+        photoVideoToggleContainer.centerXAnchor.constraint(equalTo: pickerContainerView.centerXAnchor).isActive = true
+        photoVideoToggleContainer.heightAnchor.constraint(equalTo: pickerContainerView.heightAnchor, multiplier: 0.15).isActive = true
+        
+        // Add Photo label container
+        photoVideoToggleContainer.addSubview(photoTabContainer)
+        photoTabContainer.heightAnchor.constraint(equalTo: photoVideoToggleContainer.heightAnchor).isActive = true
+        photoTabContainer.widthAnchor.constraint(equalTo: photoVideoToggleContainer.widthAnchor, multiplier: 0.5).isActive = true
+        photoTabContainer.leftAnchor.constraint(equalTo: photoVideoToggleContainer.leftAnchor).isActive = true
+        photoTabContainer.rightAnchor.constraint(equalTo: photoVideoToggleContainer.centerXAnchor).isActive = true
+        photoTabContainer.centerYAnchor.constraint(equalTo: photoVideoToggleContainer.centerYAnchor).isActive = true
+        
+        // Add photo Label
+        photoTabContainer.addSubview(photoTabLabel)
+        photoTabLabel.centerYAnchor.constraint(equalTo: photoTabContainer.centerYAnchor).isActive = true
+        photoTabLabel.centerXAnchor.constraint(equalTo: photoTabContainer.centerXAnchor).isActive = true
+        
+        
+        // Add Video label container
+        photoVideoToggleContainer.addSubview(videoTabContainer)
+        videoTabContainer.heightAnchor.constraint(equalTo: photoVideoToggleContainer.heightAnchor).isActive = true
+        videoTabContainer.widthAnchor.constraint(equalTo: photoVideoToggleContainer.widthAnchor, multiplier: 0.5).isActive = true
+        videoTabContainer.leftAnchor.constraint(equalTo: photoVideoToggleContainer.centerXAnchor).isActive = true
+        videoTabContainer.rightAnchor.constraint(equalTo: photoVideoToggleContainer.rightAnchor).isActive = true
+        videoTabContainer.centerYAnchor.constraint(equalTo: photoVideoToggleContainer.centerYAnchor).isActive = true
+        
+        // Add Video Label
+        videoTabContainer.addSubview(videoTabLabel)
+        videoTabLabel.centerYAnchor.constraint(equalTo: videoTabContainer.centerYAnchor).isActive = true
+        videoTabLabel.centerXAnchor.constraint(equalTo: videoTabContainer.centerXAnchor).isActive = true
+        
+        
+    }
+    
+    
+    
+    
+    
 }
 
 
