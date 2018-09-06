@@ -14,18 +14,20 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate, Selecte
     fileprivate let userName = "John"
     
     ////////////////// My Variables //////////////////
-    struct Message {
+    private struct Message {
         var isIncoming : Bool?
         var sender : String?
         var content : String?
-        var type : String?
-        var image : UIImage?
+        var type : MessageType?
+        var thumbnail : UIImage?
     }
     
-    var conversations = [Message]()
+    private var conversations = [Message]()
+    fileprivate let myBlueColor : UIColor = UIColor(red: 66/255, green: 103/255, blue: 178/255, alpha: 1.0)
     
-    let myBlueColor : UIColor = UIColor(red: 66/255, green: 103/255, blue: 178/255, alpha: 1.0)
-    
+    enum MessageType : Int {
+        case text, photo, video
+    }
     
     
     
@@ -67,6 +69,29 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate, Selecte
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotifications), name:NSNotification.Name.UIKeyboardWillHide, object: nil)
     }
     
+    
+    
+    // On View appear
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(true)
+        
+        if(messageContainerView.isHidden)
+        {
+            messageContainerView.alpha = 0
+            shortcutContainer.alpha = 0
+            UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
+                
+                self.messageContainerView.isHidden = false
+                self.shortcutContainer.isHidden = false
+                
+                self.messageContainerView.alpha = 1
+                self.shortcutContainer.alpha = 1
+                
+            }, completion: nil)
+        }
+        
+        
+    }
     
     
     
@@ -189,14 +214,14 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate, Selecte
     ////////////////// Send Selected Image Delegate Method //////////////////
 
     func imageUploaded(selectedImage: UIImage) {
-        let mediaMessage : Message = Message(isIncoming: false, sender: userName, content: "", type: "photo", image: selectedImage)
+        let mediaMessage : Message = Message(isIncoming: false, sender: userName, content: "", type: .photo, thumbnail: selectedImage)
         
         addMessageToChat(newMessage: mediaMessage)
         askChatBotToRespond(userMessage: mediaMessage)
     }
     
     func videoUploaded(thumbnail: UIImage, duration: Float, localURL: URL) {
-        let mediaMessage : Message = Message(isIncoming: false, sender: userName, content: "", type: "video", image: thumbnail)
+        let mediaMessage : Message = Message(isIncoming: false, sender: userName, content: "", type: .video, thumbnail: thumbnail)
         
         addMessageToChat(newMessage: mediaMessage)
         askChatBotToRespond(userMessage: mediaMessage)
@@ -233,7 +258,7 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate, Selecte
         
         let frameWidth = view.frame.width
         
-        if(conversations[indexPath.row].type == "text")
+        if(conversations[indexPath.row].type == .text)
         {
             cell.messageImageView.isHidden = true
             cell.messageTextView.isHidden = false
@@ -272,7 +297,7 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate, Selecte
             cell.messageBubbleView.isHidden = true
             
             let myCellSize : CGFloat = (self.view.frame.height / 3)
-            cell.messageImageView.image = self.conversations[indexPath.row].image
+            cell.messageImageView.image = self.conversations[indexPath.row].thumbnail
 
             
             if(conversations[indexPath.row].isIncoming)!
@@ -303,7 +328,7 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate, Selecte
     // Setup Cell height based on the length of Message String
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         
-        if conversations[indexPath.row].type == "text"
+        if conversations[indexPath.row].type == .text
         {
             if let messageText = conversations[indexPath.row].content {
                 let size = CGSize(width: 250.0, height: .infinity)
@@ -348,7 +373,12 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate, Selecte
     // Go to Data Analytics Page
     @objc private func handleDataAnalyticsTapped()
     {
-        print("Chart page opening")
+        messageBoxTextView.endEditing(true)
+        messageContainerView.isHidden = true
+        shortcutContainer.isHidden = true
+        
+        let dataAnalyticsVC = DataAnalyticsViewController()
+        self.navigationController?.pushViewController(dataAnalyticsVC, animated: true)
     }
     
     // Send messages handler
@@ -357,7 +387,7 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate, Selecte
         let message : String! = messageBoxTextView.text ?? ""
         if(!message.isEmpty)
         {
-            let newMessage : Message = Message.init(isIncoming: false, sender: userName, content: message.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines), type: "text", image: nil)
+            let newMessage : Message = Message.init(isIncoming: false, sender: userName, content: message.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines), type: .text, thumbnail: nil)
         
             addMessageToChat(newMessage: newMessage)
             
@@ -428,7 +458,7 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate, Selecte
     {
         startCollapseAnimations()
         let messageContent = "Hey there! My name is \(userName)."
-        let message : Message = Message.init(isIncoming: false, sender: userName, content: messageContent, type: "text", image: nil)
+        let message : Message = Message.init(isIncoming: false, sender: userName, content: messageContent, type: .text, thumbnail: nil)
         addMessageToChat(newMessage: message)
         askChatBotToRespond(userMessage: message)
     }
@@ -451,9 +481,9 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate, Selecte
     // Populate chat data
     private func populateData()
     {
-        let welcomeMessage_1 : Message = Message.init(isIncoming: true, sender: "Chat Bot", content: "Hello there", type: "text", image: nil)
+        let welcomeMessage_1 : Message = Message.init(isIncoming: true, sender: "Chat Bot", content: "Hello there", type: .text, thumbnail: nil)
 
-        let welcomeMessage_2 : Message = Message.init(isIncoming: true, sender: "Chat Bot", content: "Welcome to the Clerkie Chat bot.", type: "text", image: nil)
+        let welcomeMessage_2 : Message = Message.init(isIncoming: true, sender: "Chat Bot", content: "Welcome to the Clerkie Chat bot.", type: .text, thumbnail: nil)
 
         conversations.append(welcomeMessage_1)
         conversations.append(welcomeMessage_2)
@@ -519,19 +549,24 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate, Selecte
     {
         let myChatBot : ChatBot = ChatBot()
         var response : String = ""
-        if(userMessage.type == "text")
+        if(userMessage.type == .text)
         {
             response = myChatBot.getResponse(message: userMessage.content!)
         }
-        else if (userMessage.type == "photo")
+        else if (userMessage.type == .photo)
         {
             response = myChatBot.respondToPhoto()
         }
-        else{
+        else if (userMessage.type == .video)
+        {
             response = myChatBot.respondToVideo()
         }
+        else
+        {
+            response = myChatBot.respondDefault()
+        }
         
-        let newMessage : Message = Message.init(isIncoming: true, sender: "Chat Bot", content: response, type: "text", image: nil)
+        let newMessage : Message = Message.init(isIncoming: true, sender: "Chat Bot", content: response, type: .text, thumbnail: nil)
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
             self.addMessageToChat(newMessage: newMessage)

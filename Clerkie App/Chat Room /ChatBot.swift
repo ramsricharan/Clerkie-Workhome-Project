@@ -83,6 +83,10 @@ class ChatBot {
         return VIDEO_RESPONSE.randomElement()
     }
     
+    func respondDefault() -> String
+    {
+        return DEFAULT_RESPONSE.randomElement()
+    }
     
     
     
