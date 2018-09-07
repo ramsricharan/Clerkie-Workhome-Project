@@ -9,6 +9,8 @@
 import Foundation
 import UIKit
 
+
+// View Controller Extensions
 extension UIViewController
 {
     // Alert message display function
@@ -30,5 +32,24 @@ extension UIViewController
         view.endEditing(true)
     }
     
-    
 }
+
+
+
+
+// My Custom Colors
+extension UIColor
+{
+    static let myPink = UIColor(red: 209/255, green: 0/255, blue: 80/255, alpha: 1.0)
+    static let myBlueColor : UIColor = UIColor(red: 66/255, green: 103/255, blue: 178/255, alpha: 1.0)
+    static let myGreen : UIColor = UIColor(red: 0/255, green: 175/255, blue: 136/255, alpha: 1.0)
+}
+
+
+
+
+
+
+
+
+

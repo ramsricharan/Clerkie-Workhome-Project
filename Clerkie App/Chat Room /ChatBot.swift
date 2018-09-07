@@ -34,15 +34,21 @@ class ChatBot {
         let receivedMessage = message.lowercased()
         var response = ""
         
+        if(receivedMessage.contains("thank"))
+        {
+            return "No Problem."
+        }
+        
+        
         let isGreeting = GREETING_KEYWORDS.contains(where: receivedMessage.contains)
         let isQuestion = QUESTIONS_KEYWORDS.contains(where: receivedMessage.contains)
         let isApology = APOLOGIES_KEYWORD.contains(where: receivedMessage.contains)
         let isFunny = FUN_KEYWORDS.contains(where: receivedMessage.contains)
         
         
+        
         if(isGreeting)
         {
-            
             response.append("\(GREETING_RESPONSE.randomElement()). ")
         }
         
@@ -58,7 +64,7 @@ class ChatBot {
         
         if(isQuestion)
         {
-            response.append("My bad I am not yet prepared to answer questions..")
+            response.append(handleQuestion(receivedMessage))
         }
         
         if(response.isEmpty)
@@ -90,14 +96,37 @@ class ChatBot {
     
     
     
+    
+    
+    private func handleQuestion(_ message : String) -> String
+    {
+        var response : String = ""
+        if(message.contains("how are you")){
+             response.append("I am good. :)")
+        }
+        else if(message.contains("what are you doing")){
+            response.append("I am chatting with one of the wonderful person on this planet.")
+        }
+        else if(message.contains("your name")){
+            response.append("My name is Charlie, the bot!")
+        }
+        else{
+            response.append("My bad, I don't know what to answer for that.")
+        }
+        
+        return response
+    }
+    
+    
+    
 }
 
 
 
 
 
-extension Array {
-
+extension Array
+{
     func randomElement() -> Element
     {
         let number = Int(arc4random_uniform(UInt32(self.count - 1)))

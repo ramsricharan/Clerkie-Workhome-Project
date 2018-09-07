@@ -12,11 +12,14 @@ import UIKit
 
 class CustomMessageCell : UITableViewCell {
     
-    ///////// View Components //////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+                                    ///////// View Components //////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     let messageBubbleView : UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = UIColor.red
+        view.backgroundColor = UIColor.white
         view.layer.cornerRadius = 15
         view.layer.masksToBounds = true
         return view
@@ -44,7 +47,10 @@ class CustomMessageCell : UITableViewCell {
         return imageView
     }()
     
-    // Arrange view in the cell
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+                        ///////////////// Arrange view in the cell //////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         

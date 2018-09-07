@@ -11,6 +11,7 @@
 		358F6187213E49B9008824AF /* GalleryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358F6186213E49B9008824AF /* GalleryViewController.swift */; };
 		358F6189213E6899008824AF /* CustomImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358F6188213E6899008824AF /* CustomImageCell.swift */; };
 		35941DF8213FAFF30017406D /* DataAnalyticsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35941DF7213FAFF30017406D /* DataAnalyticsViewController.swift */; };
+		359A93172141D55200B68080 /* CircularTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 359A93162141D55200B68080 /* CircularTransition.swift */; };
 		35E5518A213A0E8C00E22942 /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E55189213A0E8C00E22942 /* SignUpViewController.swift */; };
 		35E5518C213A12CE00E22942 /* inputValidation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E5518B213A12CE00E22942 /* inputValidation.swift */; };
 		35E5518E213A16B800E22942 /* myExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E5518D213A16B800E22942 /* myExtensions.swift */; };
@@ -28,6 +29,7 @@
 		358F6186213E49B9008824AF /* GalleryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryViewController.swift; sourceTree = "<group>"; };
 		358F6188213E6899008824AF /* CustomImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomImageCell.swift; sourceTree = "<group>"; };
 		35941DF7213FAFF30017406D /* DataAnalyticsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataAnalyticsViewController.swift; sourceTree = "<group>"; };
+		359A93162141D55200B68080 /* CircularTransition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularTransition.swift; sourceTree = "<group>"; };
 		35E55189213A0E8C00E22942 /* SignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
 		35E5518B213A12CE00E22942 /* inputValidation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = inputValidation.swift; sourceTree = "<group>"; };
 		35E5518D213A16B800E22942 /* myExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = myExtensions.swift; sourceTree = "<group>"; };
@@ -82,6 +84,7 @@
 				35EFBD0C21388D6900A9620E /* LoginViewController.swift */,
 				35E55189213A0E8C00E22942 /* SignUpViewController.swift */,
 				35E5518B213A12CE00E22942 /* inputValidation.swift */,
+				359A93162141D55200B68080 /* CircularTransition.swift */,
 			);
 			path = "Welcome Page";
 			sourceTree = "<group>";
@@ -111,10 +114,10 @@
 				35E55192213A346A00E22942 /* Welcome Page */,
 				35E5518F213A332900E22942 /* Chat Room  */,
 				35941DF6213FAFA00017406D /* Data Analytics */,
+				35E5518D213A16B800E22942 /* myExtensions.swift */,
 				35EFBD1121388D6D00A9620E /* Assets.xcassets */,
 				35EFBD1621388D6D00A9620E /* Info.plist */,
 				35F64A1E2139D82E005619AB /* GoogleService-Info.plist */,
-				35E5518D213A16B800E22942 /* myExtensions.swift */,
 			);
 			path = "Clerkie App";
 			sourceTree = "<group>";
@@ -260,6 +263,7 @@
 				35E5518C213A12CE00E22942 /* inputValidation.swift in Sources */,
 				35E5518E213A16B800E22942 /* myExtensions.swift in Sources */,
 				353C4962213CF65B002FA5D7 /* ChatBot.swift in Sources */,
+				359A93172141D55200B68080 /* CircularTransition.swift in Sources */,
 				358F6187213E49B9008824AF /* GalleryViewController.swift in Sources */,
 				35941DF8213FAFF30017406D /* DataAnalyticsViewController.swift in Sources */,
 				35E5518A213A0E8C00E22942 /* SignUpViewController.swift in Sources */,
@@ -393,7 +397,10 @@
 				DEVELOPMENT_TEAM = RW6DCG4D4G;
 				INFOPLIST_FILE = "Clerkie App/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "Ram-Sri-Charan.Clerkie-App";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
@@ -410,7 +417,10 @@
 				DEVELOPMENT_TEAM = RW6DCG4D4G;
 				INFOPLIST_FILE = "Clerkie App/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "Ram-Sri-Charan.Clerkie-App";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;

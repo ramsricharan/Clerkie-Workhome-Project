@@ -10,10 +10,15 @@ import FirebaseAuth
 
 class ChatRoomViewController: UITableViewController, UITextViewDelegate, SelectedImageDelegate {
     
+    
+    
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+                            ////////////////// My Variables //////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     fileprivate let cellIdentifier = "MessageCell"
     fileprivate let userName = "John"
     
-    ////////////////// My Variables //////////////////
     private struct Message {
         var isIncoming : Bool?
         var sender : String?
@@ -23,22 +28,24 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate, Selecte
     }
     
     private var conversations = [Message]()
-    fileprivate let myBlueColor : UIColor = UIColor(red: 66/255, green: 103/255, blue: 178/255, alpha: 1.0)
     
     enum MessageType : Int {
         case text, photo, video
     }
     
     
-    
-    ////////////////// The startup methods //////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+                                ////////////////// Startup methods //////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = UIColor.darkGray
+        
+        // Load the initial Data
         populateData()
         
-        
         // Setup View Components
+        view.backgroundColor = UIColor.black
         setupViews()
         
         // Setup TableView
@@ -47,19 +54,18 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate, Selecte
         tableView.keyboardDismissMode = .onDrag
         tableView.contentInset = UIEdgeInsetsMake(0, 0, 60, 0)
 
-        
         // Navigation Bar
         self.navigationController?.navigationBar.barStyle = .blackOpaque
 
         // Add Data Analytics Page button
         let chartButton = UIBarButtonItem(image: #imageLiteral(resourceName: "chart-icon"), style: .plain, target: self, action: #selector(handleDataAnalyticsTapped))
+        chartButton.tintColor = UIColor.myPink
         self.navigationItem.leftBarButtonItem = chartButton
         
         // Add logout button
         let logoutButton = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(onLogoutPressed))
         logoutButton.tintColor = UIColor.red
         self.navigationItem.rightBarButtonItem  = logoutButton
-        
         
         arrangeNavTitleViews()
 
@@ -68,7 +74,6 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate, Selecte
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotifications), name:NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotifications), name:NSNotification.Name.UIKeyboardWillHide, object: nil)
     }
-    
     
     
     // On View appear
@@ -95,8 +100,9 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate, Selecte
     
     
     
-    
-    ////////////////// Setup TitleBar View //////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+                            ////////////////// Setup TitleBar View //////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // Base UIView
     var baseView : UIView = {
@@ -210,9 +216,11 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate, Selecte
 
     
     
-    
-    ////////////////// Send Selected Image Delegate Method //////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    ////////////////// Send Selected Image Delegate Method //////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    
     func imageUploaded(selectedImage: UIImage) {
         let mediaMessage : Message = Message(isIncoming: false, sender: userName, content: "", type: .photo, thumbnail: selectedImage)
         
@@ -233,9 +241,10 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate, Selecte
     
     
     
-    
-    ////////////////// TableView methods //////////////////
-    
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+                            ////////////////// TableView methods //////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     // Set number of rows in tableView
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return conversations.count
@@ -251,10 +260,9 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate, Selecte
     // Populate Custom Cell with data
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! CustomMessageCell
-        cell.backgroundColor = UIColor.darkGray
+        cell.backgroundColor = UIColor.black
         cell.selectionStyle = .none
         cell.messageTextView.text = conversations[indexPath.row].content
-        
         
         let frameWidth = view.frame.width
         
@@ -275,13 +283,13 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate, Selecte
                     cell.messageBubbleView.frame = CGRect(x: 8, y: 5, width: estimatedSize.width + 8 + 16, height: estimatedSize.height + 25)
                     cell.messageBubbleView.backgroundColor = UIColor(white: 1, alpha: 0.9)
                     cell.messageTextView.frame = CGRect(x: 16, y: 8, width: estimatedSize.width + 16 + 8 - 2, height: estimatedSize.height + 20)
-                    cell.messageTextView.textColor = UIColor.black
+                    cell.messageTextView.textColor = UIColor.myPink
                 }
                 else
                 {
                     // Outgoing message
                     cell.messageBubbleView.frame = CGRect(x: frameWidth - estimatedSize.width - 8 - 16 - 8, y: 5, width: estimatedSize.width + 8 + 16, height: estimatedSize.height + 25)
-                    cell.messageBubbleView.backgroundColor = myBlueColor
+                    cell.messageBubbleView.backgroundColor = UIColor.myPink
                     cell.messageTextView.frame = CGRect(x: frameWidth - estimatedSize.width - 16 - 8 - 2, y: 8, width: estimatedSize.width + 16 + 8, height: estimatedSize.height + 20)
                     cell.messageTextView.textColor = UIColor.white
                 }
@@ -299,7 +307,6 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate, Selecte
             let myCellSize : CGFloat = (self.view.frame.height / 3)
             cell.messageImageView.image = self.conversations[indexPath.row].thumbnail
 
-            
             if(conversations[indexPath.row].isIncoming)!
             {
                 // Incoming message
@@ -324,7 +331,6 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate, Selecte
     
     
     
-    
     // Setup Cell height based on the length of Message String
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         
@@ -346,16 +352,10 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate, Selecte
     
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    ////////////////// Action handlers //////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+                            ////////////////// Action handlers //////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     
     // Logout handler
     @objc private func onLogoutPressed()
@@ -475,8 +475,9 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate, Selecte
     
     
     
-    
-    ////////////////// Helper methods //////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+                                ////////////////// Helper methods //////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // Populate chat data
     private func populateData()
@@ -604,9 +605,10 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate, Selecte
     
     
     
-    
-    ////////////////// View Components //////////////////
-    
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+                            ////////////////// View Components //////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     // Container view
     var messageContainerView : UIView = {
         let view = UIView()
@@ -626,10 +628,10 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate, Selecte
         let textView = UITextView()
         textView.translatesAutoresizingMaskIntoConstraints = false
         textView.font = UIFont.systemFont(ofSize: 14)
-        textView.backgroundColor = UIColor.lightGray
-        
         textView.layer.cornerRadius = 6
         textView.layer.masksToBounds = true
+        textView.layer.borderWidth = 1
+        textView.layer.borderColor = UIColor.black.cgColor
         
         return textView
     }()
@@ -639,7 +641,7 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate, Selecte
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setBackgroundImage(#imageLiteral(resourceName: "send"), for: .normal)
-        button.backgroundColor = UIColor(red: 0/255, green: 175/255, blue: 136/255, alpha: 1.0)
+        button.backgroundColor = UIColor.myBlueColor
         
         button.layer.masksToBounds = true
         button.layer.cornerRadius = 16.5
@@ -664,7 +666,7 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate, Selecte
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(#imageLiteral(resourceName: "shortcut-icon"), for: .normal)
-        button.backgroundColor = UIColor(red: 209/255, green: 0/255, blue: 80/255, alpha: 1.0)
+        button.backgroundColor = UIColor.myPink
         button.addTarget(self, action: #selector(chatShortcutTapped), for: .touchUpInside)
         button.layer.masksToBounds = true
         button.layer.cornerRadius = 16.5
@@ -676,7 +678,7 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate, Selecte
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(#imageLiteral(resourceName: "gallery-icon"), for: .normal)
-        button.backgroundColor = UIColor(red: 209/255, green: 0/255, blue: 80/255, alpha: 1.0)
+        button.backgroundColor = UIColor.myPink
         button.addTarget(self, action: #selector(onGalleryTapped), for: .touchUpInside)
         button.layer.masksToBounds = true
         
@@ -689,7 +691,7 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate, Selecte
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(#imageLiteral(resourceName: "hello-icon"), for: .normal)
-        button.backgroundColor = UIColor(red: 209/255, green: 0/255, blue: 80/255, alpha: 1.0)
+        button.backgroundColor = UIColor.myPink
         button.addTarget(self, action: #selector(onSayHiTapped), for: .touchUpInside)
         button.layer.masksToBounds = true
         button.layer.cornerRadius = 16.5
@@ -745,14 +747,12 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate, Selecte
         sendButton.leftAnchor.constraint(equalTo: messageBoxTextView.rightAnchor, constant: 4).isActive = true
         sendButton.rightAnchor.constraint(equalTo: messageContainerView.rightAnchor, constant: -4).isActive = true
         sendButton.bottomAnchor.constraint(equalTo: messageContainerView.bottomAnchor, constant: -4).isActive = true
-        
     }
     
     
     // Setting up Shortcut button layout
     private func setupShortcutButtons()
     {
-        
         let myView = self.navigationController?.view
         
         // Add Shortcut container
@@ -790,20 +790,9 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate, Selecte
         // Make the root button top of stack
         shortcutContainer.bringSubview(toFront: chatShortcutsButton)
     }
-    
-    
-    
-    
-    
+ 
     
 }
-
-
-
-
-
-
-
 
 
 

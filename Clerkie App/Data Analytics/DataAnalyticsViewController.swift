@@ -11,31 +11,47 @@ import Charts
 
 class DataAnalyticsViewController: UIViewController, UIScrollViewDelegate {
 
-    ///////// My Variables ////////////
+    
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+                                        ///////// My Variables ////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
     var currentVisibleView : UIView?
     
     
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+                                        /////////  Start up methods ////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = UIColor.darkGray
+        view.backgroundColor = UIColor.black
         
+        // Setup Views
         setupView()
         baseScrollView.delegate = self
         
+        // Setup Chart Data
         barChartSetup()
         horizontalBarChartSetup()
         lineChartSetup()
         duoLineChartSetup()
-        populatePieChart()
+        setupPieChart()
         
+        
+        // Setup Navigation bar
+        self.navigationItem.title = "Data Analytics"
+        self.navigationController?.navigationBar.tintColor = UIColor.myPink
 
     }
     
     
     
     
-    
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+                                    ///////// ScrollView methods ////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // User stopped dragging the ScrollView
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         if(baseScrollView.isDecelerating == false)
         {
@@ -43,13 +59,12 @@ class DataAnalyticsViewController: UIViewController, UIScrollViewDelegate {
         }
     }
     
-    
+    // ScrollView stopped after acceleration animation
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         animateVisibleView()
     }
     
-    
-    
+    // Make the current Visible graph to animate
     func animateVisibleView()
     {
         let barGraphFrame : CGRect = self.barGraphContainer.frame
@@ -58,30 +73,27 @@ class DataAnalyticsViewController: UIViewController, UIScrollViewDelegate {
         let duoLineGraphFrame : CGRect = self.duoLineGraphContainer.frame
         let pieChartFrame : CGRect = self.pieChartContainer.frame
         
-        
         let scrollingContainer : CGRect = CGRect(x: 0, y: baseScrollView.contentOffset.y + 200, width: baseScrollView.frame.size.width, height: baseScrollView.frame.size.height)
 
-        
         if(scrollingContainer.intersects(barGraphFrame))
         {
-            myBarGraphView.animate(xAxisDuration: 2.0, yAxisDuration: 2.0, easingOption: .easeInExpo)
+            myBarGraphView.animate(xAxisDuration: 0.5, yAxisDuration: 1.0, easingOption: .easeOutBack)
         }
         else if(scrollingContainer.intersects(horizontalGraphFrame))
         {
-            myHorizontalGraphView.animate(xAxisDuration: 2.0, yAxisDuration: 2.0, easingOption: .easeInSine)
-
+            myHorizontalGraphView.animate(xAxisDuration: 1.0, yAxisDuration: 0.5, easingOption: .easeOutCubic)
         }
         else if(scrollingContainer.intersects(singleLineGraphFrame))
         {
-            mySingleLineGraphView.animate(xAxisDuration: 2.0, easingOption: .linear)
+            mySingleLineGraphView.animate(yAxisDuration: 1.0, easingOption: .easeOutSine)
         }
         else if(scrollingContainer.intersects(duoLineGraphFrame))
         {
-            myDuoLineGraphView.animate(xAxisDuration: 2.0, easingOption: .linear)
+            myDuoLineGraphView.animate(xAxisDuration: 1.0, easingOption: .linear)
         }
         else if(scrollingContainer.intersects(pieChartFrame))
         {
-            myPieChartView.animate(yAxisDuration: 2.0, easingOption: .linear)
+            myPieChartView.animate(yAxisDuration: 1.0, easingOption: .easeInExpo)
         }
         else
         {
@@ -90,10 +102,10 @@ class DataAnalyticsViewController: UIViewController, UIScrollViewDelegate {
         
     }
     
-    
-    ///////////////// Graph Methods ////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+                            ///////////////// Graph Methods ////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    
     // Setup Bar Graph
     func barChartSetup()
     {
@@ -115,9 +127,8 @@ class DataAnalyticsViewController: UIViewController, UIScrollViewDelegate {
 
         dataSet.colors = ChartColorTemplates.joyful()
 
-        // Set Animations
-        myBarGraphView.animate(xAxisDuration: 2.0, yAxisDuration: 2.0, easingOption: .easeInExpo)
-        
+        myBarGraphView.animate(xAxisDuration: 0.5, yAxisDuration: 1.0, easingOption: .easeOutBack)
+
         // Notify the data changes
         myBarGraphView.notifyDataSetChanged()
     }
@@ -127,7 +138,7 @@ class DataAnalyticsViewController: UIViewController, UIScrollViewDelegate {
     // Setup Bar Graph
     func horizontalBarChartSetup()
     {
-        // Create Data
+        // Create Chart Data
         let entry1 = BarChartDataEntry(x: 1.0, y: 30.0)
         let entry2 = BarChartDataEntry(x: 2.0, y: 24.0)
         let entry3 = BarChartDataEntry(x: 3.0, y: 63.0)
@@ -138,36 +149,40 @@ class DataAnalyticsViewController: UIViewController, UIScrollViewDelegate {
         let entry8 = BarChartDataEntry(x: 8.0, y: 11.0)
         
         let dataSet = BarChartDataSet(values: [entry1, entry2, entry3, entry4, entry5, entry6, entry7, entry8], label: "Horizontal Bar Data")
+        
+        // Plug data into the graph
         let data = BarChartData(dataSets: [dataSet])
         myHorizontalGraphView.data = data
+        
+        // Customize chart View
         myHorizontalGraphView.chartDescription?.text = ""
+        dataSet.colors = ChartColorTemplates.liberty()
         
-        dataSet.colors = ChartColorTemplates.joyful()
-        
-        // Set Animations
         
         // Notify the data changes
         myHorizontalGraphView.notifyDataSetChanged()
     }
     
     
+    
     // Populate Line Chart Data
     func lineChartSetup()
     {
-        // Create Data
-        
+        // Generate Random Data
+        var val : Double = 0.0
         let values = (0..<10).map { (i) -> ChartDataEntry in
-            let val = Double(arc4random_uniform(UInt32(11)))
+            val += Double(arc4random_uniform(UInt32(11)))
             return ChartDataEntry(x: Double(i), y: val)
         }
         
-        let dataset = LineChartDataSet(values: values, label: "Costs")
+        let dataset = LineChartDataSet(values: values, label: "Knowledge")
+        
+        // Plug Data into the Chart View
         let data = LineChartData(dataSet: dataset)
-        
-        
         mySingleLineGraphView.data = data
 
-        dataset.circleColors = ChartColorTemplates.colorful()
+        // Customize Chart View
+        dataset.circleColors = [NSUIColor.black]
         dataset.colors = ChartColorTemplates.colorful()
         dataset.lineWidth = 2
         
@@ -183,65 +198,72 @@ class DataAnalyticsViewController: UIViewController, UIScrollViewDelegate {
     // Populate Duo Line Chart Data
     func duoLineChartSetup()
     {
-        // Create Data
-        
-        let values = (0..<5).map { (i) -> ChartDataEntry in
+        // Generate Random Data for line 1
+        let line_1_values = (0..<5).map { (i) -> ChartDataEntry in
             let val = Double(arc4random_uniform(UInt32(11)))
             return ChartDataEntry(x: Double(i), y: val)
         }
         
-        let values2 = (0..<5).map { (i) -> ChartDataEntry in
+        // Create Data for line 2
+        let line_2_values = (0..<5).map { (i) -> ChartDataEntry in
             let val = Double(arc4random_uniform(UInt32(11)))
             return ChartDataEntry(x: Double(i), y: val)
         }
         
-        let dataset = LineChartDataSet(values: values, label: "Costs")
-        let dataset2 = LineChartDataSet(values: values2, label: "Profits")
+        // Prepare Datasets
+        let dataset = LineChartDataSet(values: line_1_values, label: "Investments")
+        let dataset2 = LineChartDataSet(values: line_2_values, label: "Profits")
         
+        
+        // Plug data into the Chart
         let data = LineChartData(dataSets: [dataset, dataset2])
-        
         myDuoLineGraphView.data = data
         
+        // Customize Chart View
         dataset.colors = [NSUIColor.red]
+        dataset.circleColors = [NSUIColor.black]
+        dataset.lineWidth = 2
         
+        dataset2.colors = [NSUIColor.green]
+        dataset2.circleColors = [NSUIColor.darkGray]
+        dataset2.lineWidth = 2
+
         
         // Notify the data changes
         myDuoLineGraphView.notifyDataSetChanged()
     }
     
     
+    
     // Populate data into Pie Chart
-    func populatePieChart()
+    func setupPieChart()
     {
-//        let values = (0..<5).map { (i) -> ChartDataEntry in
-//            let val = Double(arc4random_uniform(UInt32(11)))
-//            return ChartDataEntry(x: Double(i), y: val)
-//        }
+        // Populate Dataset
+        let swift = PieChartDataEntry(value: 35.6, label: "Swift")
+        let java = PieChartDataEntry(value: 32.6, label: "Java")
+        let cpp = PieChartDataEntry(value: 20.9, label: "C++")
+        let others = PieChartDataEntry(value: 10.9, label: "Others")
         
-        let entry1 = PieChartDataEntry(value: 3.0, label: "String 1")
-        let entry2 = PieChartDataEntry(value: 5.0, label: "String 2")
-        let entry3 = PieChartDataEntry(value: 9.0, label: "String 3")
-        let entry4 = PieChartDataEntry(value: 2.0, label: "String 4")
-
-        let dataset = PieChartDataSet(values: [entry1, entry2, entry3, entry4], label: "Pie Chart")
+        let dataset = PieChartDataSet(values: [swift, java, cpp, others], label: "Languages")
         
-//        let dataset = PieChartDataSet(values: values, label: "Pie Chart")
+        // Plug the data set into chart
         let data = PieChartData(dataSet: dataset)
         myPieChartView.data = data
         
-        dataset.colors = ChartColorTemplates.joyful()
+        // Customize Pie Chart
+        dataset.colors = ChartColorTemplates.material()
         
         // Notify the data changes
         myPieChartView.notifyDataSetChanged()
-        
     }
     
     
     
     
-    
-    ///////////////// View Components ////////////////////
-    
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+                            ///////////////// View Components ////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     // Base Scroll View
     var baseScrollView : UIScrollView = {
         let scrollView = UIScrollView()
@@ -390,8 +412,6 @@ class DataAnalyticsViewController: UIViewController, UIScrollViewDelegate {
         
         // Add Pie Chart View
         arrangePieChartGraphViews()
-        
-        
     }
     
     
@@ -468,7 +488,7 @@ class DataAnalyticsViewController: UIViewController, UIScrollViewDelegate {
         // Add heading label
         let headingLabel = UILabel()
         headingLabel.translatesAutoresizingMaskIntoConstraints = false
-        headingLabel.text = "Single Line Graphs"
+        headingLabel.text = "My Knowledge"
         headingLabel.textAlignment = .center
         headingLabel.font = UIFont.boldSystemFont(ofSize: 18)
         
@@ -501,7 +521,7 @@ class DataAnalyticsViewController: UIViewController, UIScrollViewDelegate {
         // Add heading label
         let headingLabel = UILabel()
         headingLabel.translatesAutoresizingMaskIntoConstraints = false
-        headingLabel.text = "Duo Line Graphs"
+        headingLabel.text = "Investment Vs Profits Chart"
         headingLabel.textAlignment = .center
         headingLabel.font = UIFont.boldSystemFont(ofSize: 18)
         
@@ -534,7 +554,7 @@ class DataAnalyticsViewController: UIViewController, UIScrollViewDelegate {
         // Add heading label
         let headingLabel = UILabel()
         headingLabel.translatesAutoresizingMaskIntoConstraints = false
-        headingLabel.text = "Pie Chart"
+        headingLabel.text = "My Programming Skills"
         headingLabel.textAlignment = .center
         headingLabel.font = UIFont.boldSystemFont(ofSize: 18)
         

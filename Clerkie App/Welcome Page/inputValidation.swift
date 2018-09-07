@@ -41,8 +41,7 @@ class inputValidation{
     
     
     
-    
-    
+    // Check and return if the given email is valid or not
     func validateEmail(enteredEmail:String) -> Bool
     {
         let emailFormat = "[A-Z0-9a-z._%+-]+@clerkie.com"

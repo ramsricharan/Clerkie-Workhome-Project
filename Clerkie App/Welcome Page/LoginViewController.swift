@@ -10,24 +10,123 @@ import UIKit
 import FirebaseAuth
 
 
-class LoginViewController: UIViewController {
+class LoginViewController: UIViewController, UIViewControllerTransitioningDelegate, RegistrationDelegate {
+    
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+                        ///////////////// My Variables /////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    let circularTransition = CircularTransition()
     let checkInput = inputValidation()
     
+    
+    
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+                        ///////////////// ViewController Methods /////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
         // Add background color
-        view.backgroundColor = UIColor.darkGray
+        view.backgroundColor = UIColor.black
         
         // Add view components
         setupView()
         
         // Handle keyboard
         self.hideKeyboardWhenTappedAround()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(moveKeyboardIfOverlap), name:NSNotification.Name.UIKeyboardWillShow, object: nil);
+        NotificationCenter.default.addObserver(self, selector: #selector(moveKeyboardIfOverlap), name:NSNotification.Name.UIKeyboardWillHide, object: nil);
     }
     
-    ///////////////// Action Handlers ///////////////////
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        initialAnimation()
+    }
+    
+    
+    // Setting the status bar text color to white
+    override var preferredStatusBarStyle: UIStatusBarStyle{
+        return .lightContent
+    }
+    
+    
+    // Clear the text Fields
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(true)
+        usernameTextField.text = ""
+        passwordTextField.text = ""
+    }
+    
+    
+    
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+                            //////////// Registration Delegate Methods ////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    func RegistrationResult(isSuccess: Bool) {
+        print("Running delgate")
+        if(isSuccess)
+        {
+            showAlertWith(AlertTitle: "Registration Successful", AlertMessage: "Welcome, your Clerkie App account has been created successfully. Please login to start using the app.")
+        }
+    }
+    
+    
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+                            //////////// Circular Transition Methods ////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        circularTransition.transitionMode = .present
+        circularTransition.startingPoint = signUpButton.center
+        circularTransition.circleColor = signUpButton.backgroundColor!
+        
+        return circularTransition
+    }
+    
+    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        circularTransition.transitionMode = .dismiss
+        circularTransition.startingPoint = signUpButton.center
+        circularTransition.circleColor = signUpButton.backgroundColor!
+        
+        return circularTransition
+    }
+    
+    
+    
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+                            ///////////////// Action Handlers ///////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    // Handle Keyboard show/hide action handler
+    @objc func moveKeyboardIfOverlap(notification: NSNotification) {
+        
+        if let keyboardFrame = notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? CGRect {
+            
+            let isKeyboardShowing = (notification.name == NSNotification.Name.UIKeyboardWillShow)
+            // Check if key is showing
+            if(isKeyboardShowing)
+            {
+                // Check if it overlaps my Register button
+                if(keyboardFrame.intersects(self.loginButton.frame))
+                {
+                    let buffer = self.loginButton.frame.maxY - keyboardFrame.minY
+                    self.view.frame.origin.y = -buffer
+                }
+            }
+            else
+            {
+                self.view.frame.origin.y = 0 // Move view to original position
+            }
+        }
+    }
+    
+    
+    // On Login Button Pressed Action handler
     @objc private func onLoginPressed()
     {
 //        let username : String! = usernameTextField.text ?? ""
@@ -35,7 +134,6 @@ class LoginViewController: UIViewController {
         
         let username = "test@clerkie.com"
         let password = "12345678"
-        
         
         if(checkInput.checkUserInput(username: username, password: password, viewController: self))
         {
@@ -56,14 +154,11 @@ class LoginViewController: UIViewController {
                     case 17009:
                         self.showAlertWith(AlertTitle: "Wrong Password", AlertMessage: error.localizedDescription)
                         break
-                        
                     case 17011:
                         self.showAlertWith(AlertTitle: "Invalid Email ID", AlertMessage: error.localizedDescription)
-                        
                     default:
                         self.showAlertWith(AlertTitle: "Login Failed", AlertMessage: "Unable to Login to your account. Please try again later.")
                     }
-                    
                 }
             }
         }
@@ -71,26 +166,85 @@ class LoginViewController: UIViewController {
     
     
     // Sign Up Button Pressed
-    @objc private func onSubmitPressed()
+    @objc private func onSignupPressed()
     {
-        self.present(SignUpViewController(), animated: true, completion: nil)
+        let signUpVC = SignUpViewController()
+        signUpVC.delegate = self
+        signUpVC.transitioningDelegate = self
+        signUpVC.modalPresentationStyle = .custom
+        self.present(signUpVC, animated: true, completion: nil)
     }
     
     
     
     
     
-    
-    ///////////////// Helper methods ///////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+                                ///////////////// Helper methods ///////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    // Launch Chat View controller 
     private func launchChatViewController()
     {
         let chatroomNavController = UINavigationController(rootViewController: ChatRoomViewController())
         self.present(chatroomNavController, animated: true, completion: nil)
     }
     
-    ///////////////// View components and Arrangement ///////////////////
     
+    // Starting animation
+    private func initialAnimation()
+    {
+        // Make all views clear
+        appTitleLabel.alpha = 0
+        usernameContainer.alpha = 0
+        usernameTextField.alpha = 0
+        passwordContainer.alpha = 0
+        passwordTextField.alpha = 0
+        loginButton.alpha = 0
+        signUpButton.alpha = 0
+        
+        
+        // Move all views away from original position
+        let myTransform : CGAffineTransform = CGAffineTransform(translationX: 0, y: 40)
+        appTitleLabel.transform = myTransform
+        usernameContainer.transform = myTransform
+        usernameTextField.transform = myTransform
+        passwordContainer.transform = myTransform
+        passwordTextField.transform = myTransform
+        loginButton.transform = myTransform
+        
+        signUpButton.transform = CGAffineTransform(scaleX: 0, y: 0)
+        
+        
+        UIView.animate(withDuration: 1) {
+            // Set alpha back to 1
+            self.appTitleLabel.alpha = 1
+            self.usernameContainer.alpha = 1
+            self.usernameTextField.alpha = 1
+            self.passwordContainer.alpha = 1
+            self.passwordTextField.alpha = 1
+            self.loginButton.alpha = 1
+            self.signUpButton.alpha = 1
+
+            // Move all views back to their original places
+            self.appTitleLabel.transform = .identity
+            self.usernameContainer.transform = .identity
+            self.usernameTextField.transform = .identity
+            self.passwordContainer.transform = .identity
+            self.passwordTextField.transform = .identity
+            self.loginButton.transform = .identity
+            self.signUpButton.transform = .identity
+        }
+    }
+    
+    
+    
+    
+    
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    ///////////////// View components and Arrangement ///////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     
     // App title view
     var appTitleLabel : UILabel = {
@@ -137,6 +291,7 @@ class LoginViewController: UIViewController {
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.placeholder = "Password"
         textField.textAlignment = .center
+        textField.isSecureTextEntry = true
         textField.textContentType = UITextContentType.password
         return textField
     }()
@@ -162,15 +317,16 @@ class LoginViewController: UIViewController {
     var signUpButton : UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.backgroundColor = UIColor.myPink
         button.setTitle(" SignUp ", for: .normal)
         
         
         button.layer.cornerRadius = 35
         button.layer.masksToBounds = true
-        button.layer.borderWidth = 3
+        button.layer.borderWidth = 1
         button.layer.borderColor = UIColor.white.cgColor
         
-        button.addTarget(self, action: #selector(onSubmitPressed), for: .touchUpInside)
+        button.addTarget(self, action: #selector(onSignupPressed), for: .touchUpInside)
         return button
     }()
     
@@ -207,6 +363,7 @@ class LoginViewController: UIViewController {
     }
     
 
+    // Arrange all Username textfield related subviews
     private func setupUsernameTextField()
     {
         // Adding container to the BaseView
@@ -216,16 +373,16 @@ class LoginViewController: UIViewController {
         usernameContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         usernameContainer.bottomAnchor.constraint(equalTo: passwordContainer.topAnchor, constant: -16).isActive = true
 
-        
         // Add textField to the container
         usernameContainer.addSubview(usernameTextField)
         usernameTextField.heightAnchor.constraint(equalTo: usernameContainer.heightAnchor, multiplier: 0.9).isActive = true
         usernameTextField.widthAnchor.constraint(equalTo: usernameContainer.widthAnchor, multiplier: 0.9).isActive = true
         usernameTextField.centerXAnchor.constraint(equalTo: usernameContainer.centerXAnchor).isActive = true
         usernameTextField.centerYAnchor.constraint(equalTo: usernameContainer.centerYAnchor).isActive = true
-        
     }
    
+    
+    // Arrange all password textfield related views
     private func setupPasswordTextField()
     {
         // Adding container to the BaseView
@@ -235,14 +392,12 @@ class LoginViewController: UIViewController {
         passwordContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         passwordContainer.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
 
-        
         // Add textField to the container
         passwordContainer.addSubview(passwordTextField)
         passwordTextField.heightAnchor.constraint(equalTo: passwordContainer.heightAnchor, multiplier: 0.9).isActive = true
         passwordTextField.widthAnchor.constraint(equalTo: passwordContainer.widthAnchor, multiplier: 0.9).isActive = true
         passwordTextField.centerXAnchor.constraint(equalTo: passwordContainer.centerXAnchor).isActive = true
         passwordTextField.centerYAnchor.constraint(equalTo: passwordContainer.centerYAnchor).isActive = true
-        
     }
     
     

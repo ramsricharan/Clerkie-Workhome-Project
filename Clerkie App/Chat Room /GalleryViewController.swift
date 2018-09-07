@@ -11,8 +11,9 @@ import Photos
 import AVFoundation
 
 
-
-// Setup a Protocol
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+                            //////////////// Setup a Protocol /////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 protocol SelectedImageDelegate {
     func imageUploaded(selectedImage : UIImage)
     func videoUploaded(thumbnail : UIImage, duration : Float, localURL : URL)
@@ -22,8 +23,10 @@ protocol SelectedImageDelegate {
 
 class GalleryViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
-    
-    ///////////////// My Variables /////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+                                ///////////////// My Variables /////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     struct videoObject {
         var videoURL : URL?
         var thumbnail : UIImage?
@@ -40,7 +43,9 @@ class GalleryViewController: UIViewController, UICollectionViewDataSource, UICol
     
     
     
-    
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+                        /////////////////// Startup Methods /////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -61,20 +66,25 @@ class GalleryViewController: UIViewController, UICollectionViewDataSource, UICol
     }
 
 
-    /////////////// Action Handlers  ///////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+                                /////////////// Action Handlers  ///////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    // Dismiss the view controller
     @objc private func dismissVC()
     {
         placeHolderView.backgroundColor = UIColor.clear
         self.dismiss(animated: true, completion: nil)
     }
     
+    // On Photos TabButton tapped
     @objc private func onPhotosTapped()
     {
         isPhotosTab = true
         toggleSelectionView()
     }
     
+    // On Videos TabButton tapped
     @objc private func onVideoTapped()
     {
         isPhotosTab = false
@@ -85,10 +95,10 @@ class GalleryViewController: UIViewController, UICollectionViewDataSource, UICol
     
     
     
-    
-    
-    
-    /////////////// Helper Methods  ///////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+                                /////////////// Helper Methods  ///////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
     // Get images from storage
     private func grabPhotos()
@@ -142,10 +152,7 @@ class GalleryViewController: UIViewController, UICollectionViewDataSource, UICol
                 }
             }
         }
-        
-        
     }
-    
     
     
     
@@ -199,8 +206,10 @@ class GalleryViewController: UIViewController, UICollectionViewDataSource, UICol
     
     
     
-    
-    /////////////// Collection View Methods  ///////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+                            /////////////// Collection View Methods  ///////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     // Number of rows
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return isPhotosTab ? PhotosArray.count : VideosArray.count
@@ -287,9 +296,10 @@ class GalleryViewController: UIViewController, UICollectionViewDataSource, UICol
     }
     
     
-    
-    /////////////// View Components ///////////////
-    
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+                                /////////////// View Components ///////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     // Peek over view
     var placeHolderView : UIView = {
         let view = UIView()
@@ -297,8 +307,6 @@ class GalleryViewController: UIViewController, UICollectionViewDataSource, UICol
         view.backgroundColor = UIColor(white: 0, alpha: 0.4)
         return view
     }()
-    
-    
     
     
     
@@ -358,11 +366,6 @@ class GalleryViewController: UIViewController, UICollectionViewDataSource, UICol
     
     
     
-    
-    
-    
-    
-    
     // ImagePicker Container
     var pickerContainerView : UIView = {
         let view = UIView()
@@ -399,6 +402,9 @@ class GalleryViewController: UIViewController, UICollectionViewDataSource, UICol
     
     
     
+    
+    
+    
     // Arrange all the View components
     private func setupView()
     {
@@ -419,7 +425,6 @@ class GalleryViewController: UIViewController, UICollectionViewDataSource, UICol
         // Make Photo Video Tab View
         makePhotoVideoToggleView()
         
-        
         // Adding close button
         pickerContainerView.addSubview(closeButton)
         closeButton.topAnchor.constraint(equalTo: pickerContainerView.topAnchor, constant: 5).isActive = true
@@ -427,8 +432,7 @@ class GalleryViewController: UIViewController, UICollectionViewDataSource, UICol
         closeButton.widthAnchor.constraint(equalToConstant: 30).isActive = true
         closeButton.heightAnchor.constraint(lessThanOrEqualTo: pickerContainerView.heightAnchor, multiplier: 0.15).isActive = true
         
-        // Adding collectionView
-        
+        // Adding collectionViews
         pickerContainerView.addSubview(galleryCollectionView)
         galleryCollectionView.topAnchor.constraint(equalTo: photoVideoToggleContainer.bottomAnchor, constant: 5).isActive = true
         galleryCollectionView.leftAnchor.constraint(equalTo: pickerContainerView.leftAnchor, constant: 8).isActive = true
@@ -445,7 +449,7 @@ class GalleryViewController: UIViewController, UICollectionViewDataSource, UICol
 
     
     
-    
+    // Make the photo videos toggle header
     private func makePhotoVideoToggleView()
     {
         pickerContainerView.addSubview(photoVideoToggleContainer)
@@ -480,22 +484,10 @@ class GalleryViewController: UIViewController, UICollectionViewDataSource, UICol
         videoTabContainer.addSubview(videoTabLabel)
         videoTabLabel.centerYAnchor.constraint(equalTo: videoTabContainer.centerYAnchor).isActive = true
         videoTabLabel.centerXAnchor.constraint(equalTo: videoTabContainer.centerXAnchor).isActive = true
-        
-        
     }
     
     
-    
-    
-    
 }
-
-
-
-
-
-
-
 
 
 

@@ -9,22 +9,75 @@
 import UIKit
 import FirebaseAuth
 
+
+
+protocol RegistrationDelegate {
+    func RegistrationResult(isSuccess : Bool)
+}
+
+
 class SignUpViewController: UIViewController {
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+                            ///////////////// My Variables ///////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     let checkInput = inputValidation()
+    var delegate : RegistrationDelegate!
+    
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+                            ///////////////// ViewController Methods ///////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = UIColor.cyan
+        view.backgroundColor = UIColor.myPink
         setupViews()
+        
+        // Handle keyboard
+        self.hideKeyboardWhenTappedAround()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(moveKeyboardIfOverlap), name:NSNotification.Name.UIKeyboardWillShow, object: nil);
+        NotificationCenter.default.addObserver(self, selector: #selector(moveKeyboardIfOverlap), name:NSNotification.Name.UIKeyboardWillHide, object: nil);
+        
     }
     
-    ///////////////// Action Handlers ///////////////////
+    
+    
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+                            ///////////////// Action Handlers ///////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // Handle Keyboard show/hide
+    @objc func moveKeyboardIfOverlap(notification: NSNotification) {
+        
+        if let keyboardFrame = notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? CGRect {
+            
+            let isKeyboardShowing = (notification.name == NSNotification.Name.UIKeyboardWillShow)
+            // Check if key is showing
+            if(isKeyboardShowing)
+            {
+                // Check if it overlaps my Register button
+                if(keyboardFrame.intersects(self.registerButton.frame))
+                {
+                    let buffer = self.registerButton.frame.maxY - keyboardFrame.minY
+                    self.view.frame.origin.y = -buffer
+                }
+            }
+            else
+            {
+                self.view.frame.origin.y = 0 // Move view to original position
+            }
+        }
+    }
+    
+    // Handle Close button tap
     @objc func onClosePressed() {
         self.dismiss(animated: true, completion: nil)
     }
     
+    // Handle Registration
     @objc func onRegisterPressed() {
         let username : String! = usernameTextField.text ?? ""
         let password : String!  = passwordTextField.text ?? ""
@@ -43,7 +96,7 @@ class SignUpViewController: UIViewController {
                     if(error == nil && user != nil)
                     {
                         print("User created")
-                        self.present(ChatRoomViewController(), animated: true, completion: nil)
+                        self.regestrationSuccess()
                     }
                     else
                     {
@@ -66,11 +119,25 @@ class SignUpViewController: UIViewController {
         }
     }
     
-    ///////////////// Helper Methods ///////////////////
+    
+    
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+                        ///////////////// Helper Methods ///////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    // Launch Chat View controller
+    private func regestrationSuccess()
+    {
+        // Show success message
+        self.dismiss(animated: true, completion: nil)
+        delegate.RegistrationResult(isSuccess: true)
+    }
     
-    ///////////////// UI Components ///////////////////
-    
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+                            ///////////////// UI View Components ///////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     // App title view
     var appTitleLabel : UILabel = {
         let label = UILabel()
@@ -114,8 +181,9 @@ class SignUpViewController: UIViewController {
     var passwordTextField : UITextField = {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.placeholder = "Password (atleast 8 characters)"
+        textField.placeholder = "Password (atleast 6 characters)"
         textField.textAlignment = .center
+        textField.isSecureTextEntry = true
         textField.textContentType = UITextContentType.password
         return textField
     }()
@@ -132,8 +200,9 @@ class SignUpViewController: UIViewController {
     var rePasswordTextField : UITextField = {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.placeholder = "re-Password"
+        textField.placeholder = "Confirm Password"
         textField.textAlignment = .center
+        textField.isSecureTextEntry = true
         textField.textContentType = UITextContentType.password
         return textField
     }()
@@ -166,6 +235,13 @@ class SignUpViewController: UIViewController {
         
         return button
     }()
+    
+    
+    
+    
+    
+    
+    
     
     // Arranges all UI components
     private func setupViews()
@@ -200,6 +276,8 @@ class SignUpViewController: UIViewController {
         closeButton.widthAnchor.constraint(equalToConstant: 70).isActive = true
     }
     
+    
+    // Arrange Username related views
     private func setupUsernameTextField()
     {
         // Adding container to the BaseView
@@ -208,7 +286,6 @@ class SignUpViewController: UIViewController {
         usernameContainer.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
         usernameContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         usernameContainer.bottomAnchor.constraint(equalTo: passwordContainer.topAnchor, constant: -16).isActive = true
-        
         
         // Add textField to the container
         usernameContainer.addSubview(usernameTextField)
@@ -219,6 +296,7 @@ class SignUpViewController: UIViewController {
         
     }
     
+    // Arrange Password related views
     private func setupPasswordTextField()
     {
         // Adding container to the BaseView
@@ -238,6 +316,7 @@ class SignUpViewController: UIViewController {
         
     }
     
+    // Arrange re=Password related views
     private func setupRePasswordTextField()
     {
         // Adding container to the BaseView
