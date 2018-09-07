@@ -7,6 +7,8 @@
 //
 import UIKit
 import FirebaseAuth
+import AVKit
+import AVFoundation
 
 class ChatRoomViewController: UITableViewController, UITextViewDelegate, SelectedImageDelegate {
     
@@ -25,6 +27,8 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate, Selecte
         var content : String?
         var type : MessageType?
         var thumbnail : UIImage?
+        var localURL : URL?
+        var duration : Float?
     }
     
     private var conversations = [Message]()
@@ -222,14 +226,14 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate, Selecte
 
     
     func imageUploaded(selectedImage: UIImage) {
-        let mediaMessage : Message = Message(isIncoming: false, sender: userName, content: "", type: .photo, thumbnail: selectedImage)
+        let mediaMessage : Message = Message(isIncoming: false, sender: userName, content: "", type: .photo, thumbnail: selectedImage, localURL: nil, duration: nil)
         
         addMessageToChat(newMessage: mediaMessage)
         askChatBotToRespond(userMessage: mediaMessage)
     }
     
     func videoUploaded(thumbnail: UIImage, duration: Float, localURL: URL) {
-        let mediaMessage : Message = Message(isIncoming: false, sender: userName, content: "", type: .video, thumbnail: thumbnail)
+        let mediaMessage : Message = Message(isIncoming: false, sender: userName, content: "", type: .video, thumbnail: thumbnail, localURL: localURL, duration: duration)
         
         addMessageToChat(newMessage: mediaMessage)
         askChatBotToRespond(userMessage: mediaMessage)
@@ -254,6 +258,28 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate, Selecte
     // On TableView cell tapped
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         self.messageBoxTextView.endEditing(true)
+        let index = indexPath.row
+        
+        if(conversations[index].type == MessageType.photo)
+        {
+            print("You Clicked on Photo")
+        }
+        else if(conversations[index].type == MessageType.video)
+        {
+            if let videoURL = conversations[index].localURL {
+                let player = AVPlayer(url: videoURL)
+                let vc = AVPlayerViewController()
+                vc.player = player
+                
+                present(vc, animated: true) {
+                    vc.player?.play()
+                }
+            }
+        }
+        else
+        {
+            print("You clicked on text")
+        }
     }
     
     
@@ -262,7 +288,6 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate, Selecte
         let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! CustomMessageCell
         cell.backgroundColor = UIColor.black
         cell.selectionStyle = .none
-        cell.messageTextView.text = conversations[indexPath.row].content
         
         let frameWidth = view.frame.width
         
@@ -271,6 +296,10 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate, Selecte
             cell.messageImageView.isHidden = true
             cell.messageTextView.isHidden = false
             cell.messageBubbleView.isHidden = false
+            cell.durationLabel.isHidden = true
+            
+            cell.messageTextView.text = conversations[indexPath.row].content
+
             
             if let messageText = conversations[indexPath.row].content {
                 let size = CGSize(width: 250.0, height: .infinity)
@@ -303,23 +332,42 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate, Selecte
             cell.messageImageView.isHidden = false
             cell.messageTextView.isHidden = true
             cell.messageBubbleView.isHidden = true
+            cell.durationLabel.isHidden = true
+
             
             let myCellSize : CGFloat = (self.view.frame.height / 3)
             cell.messageImageView.image = self.conversations[indexPath.row].thumbnail
+            
 
             if(conversations[indexPath.row].isIncoming)!
             {
                 // Incoming message
-                cell.messageImageView.frame = CGRect(x: 8, y: 5, width: myCellSize + 8, height: myCellSize + 25)
+                cell.messageImageView.frame = CGRect(x: 8, y: 5, width: myCellSize + 8, height: myCellSize + 20)
+                if(conversations[indexPath.row].type == .video)
+                {
+                    cell.durationLabel.isHidden = false
+
+                    cell.durationLabel.text = getMinutesString(seconds: conversations[indexPath.row].duration!)
+                    cell.durationLabel.frame = CGRect(x: -4, y: myCellSize + 20, width: myCellSize + 8, height: 20)
+                }
             }
 
             else
             {
+
                 // Outgoing message
                 let leftMargin = frameWidth - myCellSize - 32.0
                 let senderWidth = myCellSize + 24
 
                 cell.messageImageView.frame = CGRect(x: leftMargin, y: 8, width: senderWidth, height: myCellSize + 20)
+                
+                if(conversations[indexPath.row].type == .video)
+                {
+                    cell.durationLabel.isHidden = false
+
+                    cell.durationLabel.text = getMinutesString(seconds: conversations[indexPath.row].duration!)
+                    cell.durationLabel.frame = CGRect(x: leftMargin - 8, y: myCellSize, width: senderWidth, height: 20)
+                }
             }
             
         }
@@ -345,7 +393,6 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate, Selecte
         }
         return ((self.view.frame.height / 3) + 30.0)
     }
-    
     
     
     
@@ -387,7 +434,7 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate, Selecte
         let message : String! = messageBoxTextView.text ?? ""
         if(!message.isEmpty)
         {
-            let newMessage : Message = Message.init(isIncoming: false, sender: userName, content: message.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines), type: .text, thumbnail: nil)
+            let newMessage : Message = Message.init(isIncoming: false, sender: userName, content: message.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines), type: .text, thumbnail: nil, localURL: nil, duration: nil)
         
             addMessageToChat(newMessage: newMessage)
             
@@ -458,7 +505,7 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate, Selecte
     {
         startCollapseAnimations()
         let messageContent = "Hey there! My name is \(userName)."
-        let message : Message = Message.init(isIncoming: false, sender: userName, content: messageContent, type: .text, thumbnail: nil)
+        let message : Message = Message.init(isIncoming: false, sender: userName, content: messageContent, type: .text, thumbnail: nil, localURL: nil, duration: nil)
         addMessageToChat(newMessage: message)
         askChatBotToRespond(userMessage: message)
     }
@@ -482,9 +529,9 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate, Selecte
     // Populate chat data
     private func populateData()
     {
-        let welcomeMessage_1 : Message = Message.init(isIncoming: true, sender: "Chat Bot", content: "Hello there", type: .text, thumbnail: nil)
+        let welcomeMessage_1 : Message = Message.init(isIncoming: true, sender: "Chat Bot", content: "Hello there", type: .text, thumbnail: nil, localURL: nil, duration: nil)
 
-        let welcomeMessage_2 : Message = Message.init(isIncoming: true, sender: "Chat Bot", content: "Welcome to the Clerkie Chat bot.", type: .text, thumbnail: nil)
+        let welcomeMessage_2 : Message = Message.init(isIncoming: true, sender: "Chat Bot", content: "Welcome to the Clerkie Chat bot.", type: .text, thumbnail: nil,localURL: nil, duration: nil)
 
         conversations.append(welcomeMessage_1)
         conversations.append(welcomeMessage_2)
@@ -567,7 +614,7 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate, Selecte
             response = myChatBot.respondDefault()
         }
         
-        let newMessage : Message = Message.init(isIncoming: true, sender: "Chat Bot", content: response, type: .text, thumbnail: nil)
+        let newMessage : Message = Message.init(isIncoming: true, sender: "Chat Bot", content: response, type: .text, thumbnail: nil, localURL: nil, duration: nil)
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
             self.addMessageToChat(newMessage: newMessage)
@@ -594,6 +641,16 @@ class ChatRoomViewController: UITableViewController, UITextViewDelegate, Selecte
     }
 
     
+    
+    // Retuns a video duration formatted string
+    private func getMinutesString(seconds : Float) -> String
+    {
+        let seconds_int : Int = Int(seconds)
+        let minutes = (seconds_int % 3600) / 60
+        let seconds = (seconds_int % 3600) % 60
+        
+        return seconds < 10 ? "\(minutes):0\(seconds)" : "\(minutes):\(seconds)"
+    }
     
     
     

@@ -129,12 +129,9 @@ class LoginViewController: UIViewController, UIViewControllerTransitioningDelega
     // On Login Button Pressed Action handler
     @objc private func onLoginPressed()
     {
-//        let username : String! = usernameTextField.text ?? ""
-//        let password : String!  = passwordTextField.text ?? ""
-        
-        let username = "test@clerkie.com"
-        let password = "12345678"
-        
+        let username : String! = usernameTextField.text ?? ""
+        let password : String!  = passwordTextField.text ?? ""
+                
         if(checkInput.checkUserInput(username: username, password: password, viewController: self))
         {
             Auth.auth().signIn(withEmail: username, password: password) {

@@ -144,7 +144,7 @@ class GalleryViewController: UIViewController, UICollectionViewDataSource, UICol
                 imageManager.requestAVAsset(forVideo: fetchVideosResults.object(at: i), options: requestVideoOptions) { (asset, audiomix, info) in
                     if let urlAsset = asset as? AVURLAsset {
                         let localVideoUrl: URL = urlAsset.url as URL
-                        let duration : Float = Float(urlAsset.duration.value)
+                        let duration : Float = Float(CMTimeGetSeconds(urlAsset.duration))
                         
                         let videoObj = videoObject(videoURL: localVideoUrl, thumbnail: nil, duration: duration)
                         self.VideosArray.append(videoObj)

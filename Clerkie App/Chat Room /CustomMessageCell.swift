@@ -47,6 +47,16 @@ class CustomMessageCell : UITableViewCell {
         return imageView
     }()
     
+    
+    let durationLabel : UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = true
+        label.textColor = UIColor.white
+        label.text = ""
+        label.textAlignment = .right
+        return label
+    }()
+    
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
                         ///////////////// Arrange view in the cell //////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -62,6 +72,9 @@ class CustomMessageCell : UITableViewCell {
         
         // Add ImageView
         addSubview(messageImageView)
+        
+        // Add Duration label
+        addSubview(durationLabel)
     }
     
     required init?(coder aDecoder: NSCoder) {
