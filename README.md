@@ -19,15 +19,15 @@ Also designed a Simple Chat Bot for auto-replies. Implemented Charts to show sam
 * Designed a Chatbox textView that grows and shrinks while the user is typing their messages.
 * Designed a simple ChatBot to have a conversation with.
 * Implemented a floating shortcut button to send quick responses and upload media etc.
-* Implemented Chart Views to show sample data in bar graphs, Lines graphs, and Pie charts.
+* Implemented Chart Views to show sample data in bar graphs, Line graphs, and Pie charts.
 
 
-## Technologies Used
+## Technologies
 * Used Google's Firebase for User Authentication.
 * Used UITableView and UICollection views with Custom cells to display different data.
-* Used **Photos** Library to get import media into my custom built Image Picker for the Chat.
+* Used **Photos** Library to import media into my custom built Image Picker for the Chat.
 * Used **Core Graphics** Framework's CGAffineTransform to handle various Animations in the App.
-* Used **Charts** an open source library to produce beautiful Chart Views.
+* Used **Charts**, an open source library to produce beautiful Chart Views.
 
 
 ## Demos
