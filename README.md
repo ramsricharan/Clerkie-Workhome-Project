@@ -1,8 +1,8 @@
 # Clerkie Workhome Project
 
 Designed an app that covers most of the common iOS features as a part of Clerkie Work Home project. 
-Handled Login and Sign up work flow. Developed a Chat application to share text, and media messages.
-Also designed a Simple Chat Bot for auto replies. Implemented Charts to show sample Data-Analytics.
+Handled Login and Sign up workflow. Developed a Chat application to share text, and media messages.
+Also designed a Simple Chat Bot for auto-replies. Implemented Charts to show sample Data-Analytics.
 
 ### Project Setup
 ```
@@ -13,16 +13,16 @@ Also designed a Simple Chat Bot for auto replies. Implemented Charts to show sam
  ```
 
 ## Key Features
-* Programatically implemented Auto-Layouts for subView arrangement and also to handle orientation changes.
+* Programmatically implemented Auto-Layouts for subView arrangement and also to handle orientation changes.
 * Implemented Secure User Authentication and User Registration using Google's Firebase.
-* Developed a Chat Application to share text, images and Videos.
-* Designed a Chatbox textView that grows and shrinks while user is typing their messages.
-* Designed a simple Chat Bot to have a conversations with.
+* Developed a Chat Application to share text, images, and Videos.
+* Designed a Chatbox textView that grows and shrinks while the user is typing their messages.
+* Designed a simple ChatBot to have a conversation with.
 * Implemented a floating shortcut button to send quick responses and upload media etc.
-* Implemented Chart Views to show sample data in bar graphs, Lines graphs and Pie charts.
+* Implemented Chart Views to show sample data in bar graphs, Lines graphs, and Pie charts.
 
 
-## Techologies Used
+## Technologies Used
 * Used Google's Firebase for User Authentication.
 * Used UITableView and UICollection views with Custom cells to display different data.
 * Used **Photos** Library to get import media into my custom built Image Picker for the Chat.
@@ -31,6 +31,6 @@ Also designed a Simple Chat Bot for auto replies. Implemented Charts to show sam
 
 
 ## Demos
-* **Screen Shots**: [Click Here]()
-* **Demo Video:** [Youtube]()
+* **Screen Shots**: [Click Here](https://github.com/ramsricharan/Clerkie-Workhome-Project/tree/master/Clerkie%20App/App%20Demo/Screenshots)
+* **Demo Video:** [Youtube](https://youtu.be/uErzVp--fXQ)
 
