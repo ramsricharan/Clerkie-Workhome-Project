@@ -4,7 +4,7 @@ Designed an app that covers most of the common iOS features as a part of Clerkie
 Handled Login and Sign up workflow. Developed a Chat application to share text, and media messages.
 Also designed a Simple Chat Bot for auto-replies. Implemented Charts to show sample Data-Analytics.
 
-### Project Setup
+## Project Setup
 ```
  Category: Coding Challenge
  Programming Language: Swift 4
